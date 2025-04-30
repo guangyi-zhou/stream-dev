@@ -1,0 +1,40 @@
+{
+  "before": null,
+  "after": {
+    "id": 2944,
+    "order_id": 1504,
+    "order_status": "1001",
+    "create_time": 1744068523000,
+    "operate_time": null
+  },页面::1> {"common":{"ar":"25","uid":"294","os":"iOS 13.3.1","ch":"Appstore","is_new":"0","md":"iPhone 14 Plus","mid":"mid_3","vc":"v2.1.132","ba":"iPhone","sid":"d71ded35-789f-40a5-a1b5-80c7e5d6066f"},"page":{"page_id":"good_detail","item":"9","during_time":5181,"item_type":"sku_id","last_page_id":"register"},"ts":1744728489671}
+页面::1> {"common":{"ar":"19","uid":"68","os":"iOS 13.3.1","ch":"Appstore","is_new":"1","md":"iPhone 14 Plus","mid":"mid_306","vc":"v2.1.134","ba":"iPhone","sid":"f79c51f1-8a6e-4e0d-9c10-c0005eb5f2dc"},"page":{"page_id":"cart","during_time":10538,"last_page_id":"good_detail"},"ts":1744728510328}
+页面::1> {"common":{"ar":"21","uid":"297","os":"Android 12.0","ch":"web","is_new":"0","md":"OPPO Remo8","mid":"mid_183","vc":"v2.1.134","ba":"OPPO","sid":"bdefba63-797a-471c-b627-06879d1b9de4"},"page":{"page_id":"register","item":"297","during_time":15000,"item_type":"user_id","last_page_id":"good_detail"},"ts":1744729517781}
+页面::1> {"common":{"ar":"30","uid":"161","os":"iOS 13.3.1","ch":"Appstore","is_new":"0","md":"iPhone 14","mid":"mid_181","vc":"v2.1.134","ba":"iPhone","sid":"b3df715c-ab26-4420-9037-f39e4d2df6db"},"page":{"page_id":"cart","during_time":18665,"last_page_id":"good_detail"},"ts":1744728189793}
+页面::1> {"common":{"ar":"25","uid":"294","os":"iOS 13.3.1","ch":"Appstore","is_new":"0","md":"iPhone 14 Plus","mid":"mid_3","vc":"v2.1.132","ba":"iPhone","sid":"d71ded35-789f-40a5-a1b5-80c7e5d6066f"},"page":{"page_id":"order","item":"9","during_time":13733,"item_type":"sku_ids","last_page_id":"good_detail"},"ts":1744728505404}
+页面::1> {"common":{"ar":"21","uid":"297","os":"Android 12.0","ch":"web","is_new":"0","md":"OPPO Remo8","mid":"mid_183","vc":"v2.1.134","ba":"OPPO","sid":"bdefba63-797a-471c-b627-06879d1b9de4"},"page":{"page_id":"good_detail","item":"14","during_time":8118,"item_type":"sku_id","last_page_id":"register"},"ts":1744729525899}
+页面::1> {"common":{"ar":"19","uid":"68","os":"iOS 13.3.1","ch":"Appstore","is_new":"1","md":"iPhone 14 Plus","mid":"mid_306","vc":"v2.1.134","ba":"iPhone","sid":"f79c51f1-8a6e-4e0d-9c10-c0005eb5f2dc"},"page":{"page_id":"order","item":"6,1,17,26","during_time":15410,"item_type":"sku_ids","last_page_id":"cart"},"ts":1744728527738}
+页面::1> {"common":{"ar":"25","uid":"294","os":"iOS 13.3.1","ch":"Appstore","is_new":"0","md":"iPhone 14 Plus","mid":"mid_3","vc":"v2.1.132","ba":"iPhone","sid":"d71ded35-789f-40a5-a1b5-80c7e5d6066f"},"page":{"page_id":"payment","item":"2425","during_time":8491,"item_type":"order_id","last_page_id":"order"},"ts":1744728513895}
+页面::1> {"common":{"ar":"19","uid":"68","os":"iOS 13.3.1","ch":"Appstore","is_new":"1","md":"iPhone 14 Plus","mid":"mid_306","vc":"v2.1.134","ba":"iPhone","sid":"f79c51f1-8a6e-4e0d-9c10-c0005eb5f2dc"},"page":{"page_id":"payment","item":"2426","during_time":19696,"item_type":"order_id","last_page_id":"order"},"ts":1744728547434}
+页面::1> {"common":{"ar":"21","uid":"297","os":"Android 12.0","ch":"web","is_new":"0","md":"OPPO Remo8","mid":"mid_183","vc":"v2.1.134","ba":"OPPO","sid":"bdefba63-797a-471c-b627-06879d1b9de4"},"page":{"page_id":"order","item":"14","during_time":16851,"item_type":"sku_ids","last_page_id":"good_detail"},"ts":1744729544750}
+
+"source": {
+    "version": "1.9.7.Final",
+    "connector": "mysql",
+    "name": "mysql_binlog_source",
+    "ts_ms": 1744100949000,
+    "snapshot": "false",
+    "db": "realtime",
+    "sequence": null,
+    "table": "order_status_log",
+    "server_id": 1,
+    "gtid": null,
+    "file": "mysql-bin.000001",
+    "pos": 2446435,
+    "row": 0,
+    "thread": 177,
+    "query": null
+  },
+  "op": "c",
+  "ts_ms": 1744100949425,
+  "transaction": null
+}
