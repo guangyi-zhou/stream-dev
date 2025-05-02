@@ -1,7 +1,8 @@
 package com.gy.utils;
 
 import com.google.common.base.CaseFormat;
-import constat.constat;
+
+import com.gy.constat.constat;
 import org.apache.commons.beanutils.BeanUtils;
 
 import java.sql.*;

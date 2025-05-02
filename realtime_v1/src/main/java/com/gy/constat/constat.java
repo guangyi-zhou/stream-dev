@@ -9,14 +9,14 @@ package com.gy.constat;
 public   class  constat {
     public static final String KAFKA_BROKERS = "cdh02:9092";
 
-    public static final String TOPIC_DB = "realtime_v1_table_all_mysql_v2";
-    public static final String TOPIC_LOG = "realtime_v1_log";
+    public static final String TOPIC_DB = "stream_retail_db";
+    public static final String TOPIC_LOG = "stream_retail_log";
 
     public static final String MYSQL_HOST = "cdh03";
     public static final int MYSQL_PORT = 3306;
     public static final String MYSQL_USER_NAME = "root";
     public static final String MYSQL_PASSWORD = "root";
-    public static final String HBASE_NAMESPACE = "realtime_v1";
+    public static final String HBASE_NAMESPACE = "stream_retail";
 
     public static final String MYSQL_DRIVER = "com.mysql.cj.jdbc.Driver";
     public static final String MYSQL_URL = "jdbc:mysql://cdh03:3306?useSSL=false";
@@ -35,7 +35,7 @@ public   class  constat {
     public static final String TOPIC_Dwd_Trade_Order_PaySuc_Detail = "dwd_Trade_Order_PaySuc_Detail";
 
     public static final String TOPIC_DWD_TRADE_ORDER_CANCEL = "dwd_trade_order_cancel_detail";
-//    dwd_interaction_comment_info_v1
+    //    dwd_interaction_comment_info_v1
     public static final String TOPIC_DWD_TRADE_ORDER_PAYMENT_SUCCESS = "dwd_trade_order_payment_success";
     public static final String TOPIC_DWD_TRADE_ORDER_REFUND = "dwd_trade_order_refund";
 

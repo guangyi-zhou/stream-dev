@@ -1,5 +1,6 @@
 package com.gy.utils;
-import constat.constat;
+
+import com.gy.constat.constat;
 
 /**
  * @Package realtime_Dwd.util.Sqlutil
