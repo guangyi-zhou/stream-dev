@@ -68,11 +68,11 @@ public class Dim_App extends BaseApp {
 //        kafkaDs.print("json-->");
 
         //cdc
-        MySqlSource<String> getmysqlsource = flinksorceutil.getmysqlsource("realtime", "table_process_dim");
+        MySqlSource<String> getmysqlsource = flinksorceutil.getmysqlsource("stream_retail_config", "table_process_dim");
         DataStreamSource<String> mySQL_source = env.fromSource(getmysqlsource, WatermarkStrategy.noWatermarks(), "MySQL Source")
                 // 设置 source 节点的并行度为 4
                 .setParallelism(1);// 设置 sink 节点并行度为 1
-//        mySQL_source.print();
+//        mySQL_source.print("mysql");
         //"op":"r": {"before":null,"after":{"source_table":"activity_info","sink_table":"dim_activity_info","sink_family":"info","sink_columns":"id,activity_name,activity_type,activity_desc,start_time,end_time,create_time","sink_row_key":"id"},"source":{"version":"1.9.7.Final","connector":"mysql","name":"mysql_binlog_source","ts_ms":0,"snapshot":"false","db":"gmall2024_config","sequence":null,"table":"table_process_dim","server_id":0,"gtid":null,"file":"","pos":0,"row":0,"thread":null,"query":null},"op":"r","ts_ms":1716812196180,"transaction":null}
         //"op":"c": {"before":null,"after":{"source_table":"a","sink_table":"a","sink_family":"a","sink_columns":"aaa","sink_row_key":"aa"},"source":{"version":"1.9.7.Final","connector":"mysql","name":"mysql_binlog_source","ts_ms":1716812267000,"snapshot":"false","db":"gmall2024_config","sequence":null,"table":"table_process_dim","server_id":1,"gtid":null,"file":"mysql-bin.000002","pos":11423611,"row":0,"thread":14,"query":null},"op":"c","ts_ms":1716812265698,"transaction":null}
         //"op":"u": {"before":{"source_table":"a","sink_table":"a","sink_family":"a","sink_columns":"aaa","sink_row_key":"aa"},"after":{"source_table":"a","sink_table":"a","sink_family":"a","sink_columns":"aaabbb","sink_row_key":"aa"},"source":{"version":"1.9.7.Final","connector":"mysql","name":"mysql_binlog_source","ts_ms":1716812311000,"snapshot":"false","db":"gmall2024_config","sequence":null,"table":"table_process_dim","server_id":1,"gtid":null,"file":"mysql-bin.000002","pos":11423960,"row":0,"thread":14,"query":null},"op":"u","ts_ms":1716812310215,"transaction":null}
@@ -133,7 +133,6 @@ public class Dim_App extends BaseApp {
                     }
                 });
 
-
         MapStateDescriptor<String, CommonTable> tableMapStateDescriptor = new MapStateDescriptor<>
                 ("maps", String.class, CommonTable.class);
         BroadcastStream<CommonTable> broadcast = tpds.broadcast(tableMapStateDescriptor);
@@ -143,10 +142,10 @@ public class Dim_App extends BaseApp {
         SingleOutputStreamOperator<Tuple2<JSONObject, CommonTable>> dimDS = connects.process(
                 new Tablepeocessfcation(tableMapStateDescriptor)
         );
-//        2> ({"op":"u","dic_code":"1103","dic_name":"iiii"},CommonTable(sourceTable=base_dic, sinkTable=dim_base_dic, sinkColumns=dic_code,dic_name, sinkFamily=info, sinkRowKey=dic_code, op=c))
-
-        dimDS.print();
-        dimDS.addSink(new flinksinkHbase());
+////        2> ({"op":"u","dic_code":"1103","dic_name":"iiii"},CommonTable(sourceTable=base_dic, sinkTable=dim_base_dic, sinkColumns=dic_code,dic_name, sinkFamily=info, sinkRowKey=dic_code, op=c))
+//
+//        dimDS.print("dimDs");
+//        dimDS.addSink(new flinksinkHbase());
 
     }
 }

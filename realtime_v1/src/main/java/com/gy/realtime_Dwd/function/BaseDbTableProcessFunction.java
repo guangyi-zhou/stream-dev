@@ -37,7 +37,7 @@ public class BaseDbTableProcessFunction extends BroadcastProcessFunction<JSONObj
         //将配置信息预加载到程序中
         Connection mySQLConnection = JdbsUtils.getMySQLConnection();
         List<TableProcessDwd> tableProcessDwdList
-                = JdbsUtils.queryList(mySQLConnection, "select * from realtime.table_process_dwd", TableProcessDwd.class, true);
+                = JdbsUtils.queryList(mySQLConnection, "select * from stream_retail_config.table_process_dwd", TableProcessDwd.class, true);
         for (TableProcessDwd tableProcessDwd : tableProcessDwdList) {
             String sourceTable = tableProcessDwd.getSourceTable();
             String sourceType = tableProcessDwd.getSourceType();

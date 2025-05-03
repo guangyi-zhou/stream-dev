@@ -188,10 +188,10 @@ public class DWD_Log extends BaseApp {
         SideOutputDataStream<String> displayDS = pageDS.getSideOutput(displayTag);
         SideOutputDataStream<String> actionDS = pageDS.getSideOutput(actionTag);
         pageDS.print("页面:");
-//        errDS.print("错误:");
-//        startDS.print("启动:");
-//        displayDS.print("曝光:");
-//        actionDS.print("动作:");
+        errDS.print("错误:");
+        startDS.print("启动:");
+        displayDS.print("曝光:");
+        actionDS.print("动作:");
         errDS.sinkTo(finksink.getkafkasink(constat.TOPIC_DWD_TRAFFIC_ERR));
         startDS.sinkTo(finksink.getkafkasink(constat.TOPIC_DWD_TRAFFIC_START));
         displayDS.sinkTo(finksink.getkafkasink(constat.TOPIC_DWD_TRAFFIC_DISPLAY));

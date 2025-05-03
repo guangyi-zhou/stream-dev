@@ -32,7 +32,7 @@ public   class  constat {
 
     public static final String TOPIC_DWD_TRADE_ORDER_DETAIL = "dwd_trade_order_detail";
 
-    public static final String TOPIC_Dwd_Trade_Order_PaySuc_Detail = "dwd_Trade_Order_PaySuc_Detail";
+    public static final String TOPIC_Dwd_Trade_Order_PaySuc_Detail = "dwd_trade_order_paysuc_detail";
 
     public static final String TOPIC_DWD_TRADE_ORDER_CANCEL = "dwd_trade_order_cancel_detail";
     //    dwd_interaction_comment_info_v1

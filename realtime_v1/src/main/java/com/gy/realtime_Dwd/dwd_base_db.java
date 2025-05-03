@@ -57,11 +57,11 @@ public class dwd_base_db extends BaseApp {
         );
 //        ype\":\"sku_id\",\"pos_id\":8,\"pos_seq\":0},{\"item\":\"11\",\"item_type\":\"sku_id\",\"pos_id\":8,\"pos_seq\":1},{\"item\":\"33\",\"item_type\":\"sku_id\",\"pos_id\":8,\"pos_seq\":2},{\"item\":\"8\",\"item_type\":\"sku_id\",\"pos_id\":8,\"pos_seq\":3},{\"item\":\"18\",\"item_type\":\"sku_id\",\"pos_id\":8,\"pos_seq\":4},{\"item\":\"11\",\"item_type\":\"sku_id\",\"pos_id\":8,\"pos_seq\":5},{\"item\":\"24\",\"item_type\":\"sku_id\",\"pos_id\":8,\"pos_seq\":6},{\"item\":\"24\",\"item_type\":\"sku_id\",\"pos_id\":8,\"pos_seq\":7},{\"item\":\"17\",\"item_type\":\"sku_id\",\"pos_id\":8,\"pos_seq\":8},{\"item\":\"33\",\"item_type\":\"sku_id\",\"pos_id\":8,\"pos_seq\":9},{\"item\":\"30\",\"item_type\":\"sku_id\",\"pos_id\":8,\"pos_seq\":10},{\"item\":\"12\",\"item_type\":\"sku_id\",\"pos_id\":8,\"pos_seq\":11},{\"item\":\"35\",\"item_type\":\"sku_id\",\"pos_id\":9,\"pos_seq\":0},{\"item\":\"9\",\"item_type\":\"sku_id\",\"pos_id\":9,\"pos_seq\":1}],\"page\":{\"during_time\":5217,\"page_id\":\"activity1111\",\"refer_id\":\"3\"},\"ts\":1743911070217}","id":13182},"source":{"thread":513,"server_id":1,"version":"1.9.7.Final","file":"mysql-bin.000001","connector":"mysql","pos":17105308,"name":"mysql_binlog_source","row":8,"ts_ms":1744112096000,"snapshot":"false","db":"realtime","table":"z_log"},"ts_ms":1744554506139}
 
-//        jsonObjDS.print();
+//        jsonObjDS.print("etl:");
 
         //TODO 使用FlinkCDC读取配置表中的配置信息
         //创建MysqlSource对象
-        MySqlSource<String> mySqlSource = flinksorceutil.getmysqlsource("realtime","table_process_dwd");
+        MySqlSource<String> mySqlSource = flinksorceutil.getmysqlsource("stream_retail_config","table_process_dwd");
         //读取数据 封装为流
         DataStreamSource<String> mysqlStrDS = env.fromSource(mySqlSource, WatermarkStrategy.noWatermarks(), "mysql_source");
         //对流中数据进行类型转换   jsonStr->实体类对象
@@ -93,7 +93,7 @@ public class dwd_base_db extends BaseApp {
         );
 //        TableProcessDwd(sourceTable=favor_info, sourceType=insert, sinkTable=dwd_interaction_favor_add, sinkColumns=id,user_id,sku_id,create_time, op=r)
 
-//        tpDS.print();
+        tpDS.print("实体类");
 
         //TODO 对配置流进行广播 ---broadcast
         MapStateDescriptor<String, TableProcessDwd> mapStateDescriptor
@@ -106,7 +106,7 @@ public class dwd_base_db extends BaseApp {
         SingleOutputStreamOperator<Tuple2<JSONObject, TableProcessDwd>> splitDS = connectDS.process(new BaseDbTableProcessFunction(mapStateDescriptor));
 ////        //TODO 将处理逻辑比较简单的事实表数据写到kafka的不同主题中
 ////        //({"create_time":"2024-05-24 16:08:39","user_id":1261,"sku_id":26,"id":7554,"ts":1717667105},TableProcessDwd(sourceTable=favor_info, sourceType=insert, sinkTable=dwd_interaction_favor_add, sinkColumns=id,user_id,sku_id,create_time, op=r))
-//        splitDS.print();
+//        splitDS.print("广播流");
         splitDS.sinkTo(finksink.getKafkaSink());
 
 

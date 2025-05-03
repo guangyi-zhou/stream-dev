@@ -34,7 +34,7 @@ public class Tablepeocessfcation extends BroadcastProcessFunction<JSONObject, Co
     @Override
     public void open(Configuration parameters) throws Exception {
         Connection mySQLConnection = JdbsUtils.getMySQLConnection();
-        List<CommonTable> commonTables = JdbsUtils.queryList(mySQLConnection, "select * from realtime.table_process_dim", CommonTable.class);
+        List<CommonTable> commonTables = JdbsUtils.queryList(mySQLConnection, "select * from stream_retail_config.table_process_dim", CommonTable.class);
         for (CommonTable commonTable : commonTables) {
             configMap.put(commonTable.getSourceTable(),commonTable);
         }

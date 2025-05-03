@@ -80,7 +80,7 @@ public abstract class BasesqlApp {
                 "  WATERMARK FOR et AS et - INTERVAL '3' SECOND\n" +
                 ") WITH (\n" +
                 "  'connector' = 'kafka',\n" +
-                "  'topic' = 'realtime_v1_table_all_mysql_v2',\n" +
+                "  'topic' = 'stream_retail_db',\n" +
                 "  'properties.bootstrap.servers' = 'cdh02:9092',\n" +
                 "  'properties.group.id' = 'testGroup',\n" +
                 "  'scan.startup.mode' = 'earliest-offset',\n" +
