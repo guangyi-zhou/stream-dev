@@ -32,7 +32,7 @@ public class dwd_trade_order_refund extends BasesqlApp {
 
         // 1.2 读取 字典表
         readBaseDic(tableEnv);
-//tableEnv.sqlQuery("Select * from base_dic").execute().print();
+        tableEnv.sqlQuery("Select * from base_dic").execute().print();
 
         // 2. 过滤退单表数据 order_refund_info   insert
         Table orderRefundInfo = tableEnv.sqlQuery(

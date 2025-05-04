@@ -45,7 +45,7 @@ public class DwdTradeOrderCancelDetail extends BasesqlApp {
                         "split_total_amount string," +
                         "ts bigint " +
                         ")" + Sqlutil.getKafkaDDL(constat.TOPIC_DWD_TRADE_ORDER_DETAIL, constat.TOPIC_DWD_TRADE_ORDER_DETAIL));
-        tableEnv.executeSql("select * from dwd_trade_order_detail").print();
+//        tableEnv.executeSql("select * from dwd_trade_order_detail").print();
         // 3. 从 topic_db 过滤出订单取消数据
         Table orderCancel = tableEnv.sqlQuery("select " +
                 "`after`['id'] id," +
@@ -80,7 +80,7 @@ public class DwdTradeOrderCancelDetail extends BasesqlApp {
                         "from dwd_trade_order_detail od " +
                         "join order_cancel oc " +
                         "on od.order_id=oc.id ");
-        result.execute().print();
+//        result.execute().print();
         //订单取消表和下单表发送到kafka
         tableEnv.executeSql(
                 "create table dwd_trade_order_cancel_detail(" +
