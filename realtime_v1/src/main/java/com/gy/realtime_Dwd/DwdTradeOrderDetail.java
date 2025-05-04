@@ -46,7 +46,7 @@ public class DwdTradeOrderDetail extends BasesqlApp {
         tableEnv.createTemporaryView("order_detail", orderDetail);
 
 
-//        orderDetail.execute().print();
+        orderDetail.execute().print();
 
 //
         // 3. 过滤出 oder_info 数据: c
@@ -117,7 +117,7 @@ public class DwdTradeOrderDetail extends BasesqlApp {
 
 //        result.execute().print();
 tableEnv.createTemporaryView("result_V1",result_V1);
-//tableEnv.sqlQuery("Select * from result_V1").execute().print();
+tableEnv.sqlQuery("Select * from result_V1").execute().print();
 
        //  7. 写出到 kafka 中
         tableEnv.executeSql(

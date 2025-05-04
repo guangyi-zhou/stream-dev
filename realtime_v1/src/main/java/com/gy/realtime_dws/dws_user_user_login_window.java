@@ -36,7 +36,7 @@ import org.apache.flink.util.Collector;
 
 /**
  * @Package realtime_dws.dws_user_user_login_window
- * @Author guangyi_zhou
+ * @Author guangYi_zhou
  * @Date 2025/4/16 8:44
  * @description: 七日回流用户和当日独立用户数
  */
