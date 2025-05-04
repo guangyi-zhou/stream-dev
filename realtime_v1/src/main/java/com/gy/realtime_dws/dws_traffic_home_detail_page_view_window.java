@@ -35,7 +35,7 @@ import java.time.Duration;
 
 /**
  * @Package realtime_dws.dws_traffic_home_detail_page_view_window
- * @Author ayang
+ * @Author guangyi_zhou
  * @Date 2025/4/15 21:54
  * @description: 首页、详情页独立访客聚合统计
  */

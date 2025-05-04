@@ -39,7 +39,7 @@ import java.time.Duration;
 
 /**
  * @Package realtime_dws.dws_traffic_vc_ch_ar_s_new_page_view_window
- * @Author ayang
+ * @Author guangyi_zhou
  * @Date 2025/4/15 9:07
  * @description: 12.2流量域版本-渠道-地区-访客类别粒度页面浏览各窗口汇总表
  */

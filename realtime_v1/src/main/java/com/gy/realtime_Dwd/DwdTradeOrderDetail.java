@@ -10,7 +10,7 @@ import org.apache.flink.table.api.bridge.java.StreamTableEnvironment;
 
 /**
  * @Package realtime_Dwd.DwdTradeOrderDetail
- * @Author ayang
+ * @Author guangyi_zhou
  * @Date 2025/4/11 15:36
  * @description: 下单事实表
  *

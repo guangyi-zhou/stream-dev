@@ -15,7 +15,7 @@ import com.gy.utils.Sqlutil;
 
 /**
  * @Package realtime_Dwd.interactionCommenInfi
- * @Author ayang
+ * @Author guangyi_zhou
  * @Date 2025/4/10 21:59
  * @description: hebing表
  */

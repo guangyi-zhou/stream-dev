@@ -39,7 +39,7 @@ import java.util.Collections;
 import java.util.HashSet;
 /**
  * @Package realtime_dws.dws_trade_province_order_window
- * @Author ayang
+ * @Author guangyi_zhou
  * @Date 2025/4/16 15:40
  * @description: 省份交易异部   doris导入
  */

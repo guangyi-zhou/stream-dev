@@ -38,7 +38,7 @@ import java.math.BigDecimal;
 
 /**
  * @Package realtime_dws.dws_trade_sku_order_window
- * @Author ayang
+ * @Author guangyi_zhou
  * @Date 2025/4/16 13:42
  * @description: 交易域SKU粒度下单各窗口  异部   doris导入
  */

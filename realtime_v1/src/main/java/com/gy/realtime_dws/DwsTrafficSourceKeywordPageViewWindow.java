@@ -8,15 +8,12 @@ import com.gy.utils.Sqlutil;
 import org.apache.flink.table.api.Table;
 import org.apache.flink.table.api.bridge.java.StreamTableEnvironment;
 
-
 /**
  * @Package realtime_dws.function.DwsTrafficSourceKeywordPageViewWindow
- * @Author ayang
+ * @Author guangyi_zhou
  * @Date 2025/4/14 19:53
  * @description: 过滤搜索词
  */
-//已经跑了
-    //15号数据和分期
 
 public class DwsTrafficSourceKeywordPageViewWindow extends BasesqlApp
 {

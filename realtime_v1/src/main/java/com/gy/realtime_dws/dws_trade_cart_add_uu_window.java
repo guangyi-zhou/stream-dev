@@ -33,7 +33,7 @@ import org.apache.flink.util.Collector;
 
 /**
  * @Package realtime_dws.dws_trade_cart_add_uu_window
- * @Author ayang
+ * @Author guangyi_zhou
  * @Date 2025/4/16 11:58
  * @description: 加购用户数
  */
