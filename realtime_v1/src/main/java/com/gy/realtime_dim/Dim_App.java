@@ -1,4 +1,4 @@
-package com.gy.realtime_Dim;
+package com.gy.realtime_dim;
 
 
 import com.alibaba.fastjson.JSON;
@@ -6,9 +6,9 @@ import com.alibaba.fastjson.JSONObject;
 import com.gy.Base.BaseApp;
 import com.gy.bean.CommonTable;
 import com.gy.constat.constat;
-import com.gy.realtime_Dim.flinkfcation.Tablepeocessfcation;
-import com.gy.realtime_Dim.flinkfcation.flinksinkHbase;
-import com.gy.realtime_Dim.flinkfcation.flinksorceutil;
+import com.gy.realtime_dim.flinkfcation.Tablepeocessfcation;
+import com.gy.realtime_dim.flinkfcation.flinksinkHbase;
+import com.gy.realtime_dim.flinkfcation.flinksorceutil;
 import com.gy.utils.Hbaseutli;
 import com.ververica.cdc.connectors.mysql.source.MySqlSource;
 

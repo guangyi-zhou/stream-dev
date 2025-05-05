@@ -1,4 +1,4 @@
-package com.gy.realtime_Dwd;
+package com.gy.realtime_dwd;
 
 
 import org.apache.flink.api.common.restartstrategy.RestartStrategies;

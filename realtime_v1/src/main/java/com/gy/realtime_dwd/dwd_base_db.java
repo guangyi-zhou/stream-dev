@@ -1,4 +1,4 @@
-package com.gy.realtime_Dwd;
+package com.gy.realtime_dwd;
 
 
 import com.alibaba.fastjson.JSON;
@@ -6,8 +6,8 @@ import com.alibaba.fastjson.JSONObject;
 import com.gy.Base.BaseApp;
 import com.gy.bean.TableProcessDwd;
 import com.gy.constat.constat;
-import com.gy.realtime_Dim.flinkfcation.flinksorceutil;
-import com.gy.realtime_Dwd.function.BaseDbTableProcessFunction;
+import com.gy.realtime_dim.flinkfcation.flinksorceutil;
+import com.gy.realtime_dwd.function.BaseDbTableProcessFunction;
 import com.gy.utils.finksink;
 import com.ververica.cdc.connectors.mysql.source.MySqlSource;
 

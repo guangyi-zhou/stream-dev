@@ -1,4 +1,4 @@
-package com.gy.realtime_Dim;
+package com.gy.realtime_dim;
 
 import com.ververica.cdc.connectors.mysql.source.MySqlSource;
 import com.ververica.cdc.connectors.mysql.table.StartupOptions;

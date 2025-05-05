@@ -1,4 +1,4 @@
-package com.gy.realtime_Dwd;
+package com.gy.realtime_dwd;
 
 
 import com.alibaba.fastjson.JSON;

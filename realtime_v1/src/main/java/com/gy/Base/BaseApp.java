@@ -1,6 +1,6 @@
 package com.gy.Base;
 
-import com.gy.realtime_Dim.flinkfcation.flinksorceutil;
+import com.gy.realtime_dim.flinkfcation.flinksorceutil;
 import org.apache.flink.api.common.eventtime.WatermarkStrategy;
 import org.apache.flink.api.common.restartstrategy.RestartStrategies;
 import org.apache.flink.api.common.time.Time;

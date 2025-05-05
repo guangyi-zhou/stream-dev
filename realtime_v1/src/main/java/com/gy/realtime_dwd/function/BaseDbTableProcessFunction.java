@@ -1,4 +1,4 @@
-package com.gy.realtime_Dwd.function;
+package com.gy.realtime_dwd.function;
 
 
 import com.alibaba.fastjson.JSONObject;

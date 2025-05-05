@@ -1,4 +1,4 @@
-package com.gy.realtime_Dwd;
+package com.gy.realtime_dwd;
 
 import com.gy.Base.BasesqlApp;
 import com.gy.constat.constat;

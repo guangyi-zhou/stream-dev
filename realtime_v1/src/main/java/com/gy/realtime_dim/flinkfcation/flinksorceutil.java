@@ -1,5 +1,5 @@
 
-package com.gy.realtime_Dim.flinkfcation;
+package com.gy.realtime_dim.flinkfcation;
 
 
 import com.gy.constat.constat;
