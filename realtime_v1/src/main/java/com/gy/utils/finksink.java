@@ -2,7 +2,6 @@ package com.gy.utils;
 
 
 import com.alibaba.fastjson.JSONObject;
-
 import com.gy.bean.TableProcessDwd;
 import com.gy.constat.constat;
 import org.apache.doris.flink.cfg.DorisExecutionOptions;
@@ -23,7 +22,7 @@ import java.util.Properties;
 
 /**
  * @Package realtime_Dwd.util.finksink
- * @Author ayang
+ * @Author guangyi_zhou
  * @Date 2025/4/10 16:21
  * @description: 发送
  */

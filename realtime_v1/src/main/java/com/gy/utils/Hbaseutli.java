@@ -17,7 +17,7 @@ import java.util.Set;
 
 /**
  * @Package realtime_Dim.utils.Hbaseutli
- * @Author ayang
+ * @Author guangyi_zhou
  * @Date 2025/4/9 14:37
  * @description: 工具
  */

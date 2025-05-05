@@ -4,7 +4,7 @@ import com.gy.constat.constat;
 
 /**
  * @Package realtime_Dwd.util.Sqlutil
- * @Author ayang
+ * @Author guangyi_zhou
  * @Date 2025/4/11 11:15
  * @description: sql工具类
  */

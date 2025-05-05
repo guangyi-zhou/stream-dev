@@ -1,7 +1,6 @@
 package com.gy.utils;
 
 import com.google.common.base.CaseFormat;
-
 import com.gy.constat.constat;
 import org.apache.commons.beanutils.BeanUtils;
 
@@ -11,7 +10,7 @@ import java.util.List;
 
 /**
  * @Package realtime_Dim.utils.JdbsUtils
- * @Author ayang
+ * @Author guangyi_zhou
  * @Date 2025/4/10 14:01
  * @description: 通过JDBC操作MySQL数据库
  */
