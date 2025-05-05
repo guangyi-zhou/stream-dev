@@ -94,7 +94,7 @@ public class Dim_App extends BaseApp {
         });
 //        2> CommonTable(sourceTable=base_trademark, sinkTable=dim_base_trademark, sinkColumns=id,tm_name, sinkFamily=info, sinkRowKey=id, op=c)
 
-//        tpds.print();
+        tpds.print();
         tpds.map(
                 new RichMapFunction<CommonTable, CommonTable>() {
 
@@ -145,7 +145,7 @@ public class Dim_App extends BaseApp {
 ////        2> ({"op":"u","dic_code":"1103","dic_name":"iiii"},CommonTable(sourceTable=base_dic, sinkTable=dim_base_dic, sinkColumns=dic_code,dic_name, sinkFamily=info, sinkRowKey=dic_code, op=c))
 //
 //        dimDS.print("dimDs");
-//        dimDS.addSink(new flinksinkHbase());
+        dimDS.addSink(new flinksinkHbase());
 
     }
 }

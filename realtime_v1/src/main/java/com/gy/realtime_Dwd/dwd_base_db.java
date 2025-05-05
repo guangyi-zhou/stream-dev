@@ -106,7 +106,7 @@ public class dwd_base_db extends BaseApp {
         SingleOutputStreamOperator<Tuple2<JSONObject, TableProcessDwd>> splitDS = connectDS.process(new BaseDbTableProcessFunction(mapStateDescriptor));
 ////        //TODO 将处理逻辑比较简单的事实表数据写到kafka的不同主题中
 ////        //({"create_time":"2024-05-24 16:08:39","user_id":1261,"sku_id":26,"id":7554,"ts":1717667105},TableProcessDwd(sourceTable=favor_info, sourceType=insert, sinkTable=dwd_interaction_favor_add, sinkColumns=id,user_id,sku_id,create_time, op=r))
-//        splitDS.print("广播流");
+        splitDS.print("广播流");
         splitDS.sinkTo(finksink.getKafkaSink());
 
 

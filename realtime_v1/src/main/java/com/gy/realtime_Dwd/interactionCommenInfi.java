@@ -47,7 +47,7 @@ public class interactionCommenInfi {
 //        env.getCheckpointConfig().setCheckpointStorage("hdfs://hadoop102:8020/ck/" + ckAndGroupId);
 
         //2.7 设置操作hadoop的用户
-        System.setProperty("HADOOP_USER_NAME","hdfs");
+//        System.setProperty("HADOOP_USER_NAME","hdfs");
         StreamTableEnvironment tableenv = StreamTableEnvironment.create(env);
         tableenv.executeSql(
                 "CREATE TABLE topic_table_v1 (\n" +
@@ -59,7 +59,7 @@ public class interactionCommenInfi {
                         " `proc_time`  AS proctime()\n "+
                         ") "+ Sqlutil.getKafkaDDL(constat.TOPIC_DB,"testGroup"));
 
-
+//        tableenv.executeSql("select * from topic_table_v1").print();
         Table comment_info = tableenv.sqlQuery("select\n" +
                 "after['id'] as  id,\n" +
                 "after['user_id'] as user_id,\n" +
@@ -68,12 +68,10 @@ public class interactionCommenInfi {
                 "after['comment_txt'] as comment_txt,\n" +
                 "ts_ms,\n" +
                 "proc_time\n" +
-                "from topic_table_v1 where source['table']='comment_info' and  op='c' ");
+                "from topic_table_v1 where source['table']='comment_info' and  op='r' ");
 
         tableenv.createTemporaryView("comment_info" ,comment_info);
-//        comment_info.execute().print();/
-
-
+//        comment_info.execute().print();
 //        tableenv.executeSql("select * from comment_info").print();
 
 

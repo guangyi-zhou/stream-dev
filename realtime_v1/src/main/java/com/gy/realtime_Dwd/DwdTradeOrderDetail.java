@@ -7,22 +7,22 @@ import org.apache.flink.table.api.Table;
 import org.apache.flink.table.api.bridge.java.StreamTableEnvironment;
 
 
-
 /**
  * @Package realtime_Dwd.DwdTradeOrderDetail
  * @Author guangyi_zhou
  * @Date 2025/4/11 15:36
  * @description: 下单事实表
- *
  */
 
 public class DwdTradeOrderDetail extends BasesqlApp {
     public static void main(String[] args) {
-        new DwdTradeOrderDetail().start(10004,4,"DwdTradeOrderDetail");
+        new DwdTradeOrderDetail().start(10004, 4,
+                "DwdTradeOrderDetail");
     }
+
     @Override
     public void handle(StreamTableEnvironment tableEnv) {
-        readOdsDb(tableEnv,constat.TOPIC_DWD_TRADE_ORDER_DETAIL);
+        readOdsDb(tableEnv, constat.TOPIC_DWD_TRADE_ORDER_DETAIL);
 
         Table orderDetail = tableEnv.sqlQuery(
                 "select " +
@@ -42,12 +42,9 @@ public class DwdTradeOrderDetail extends BasesqlApp {
                         "ts_ms " + // 确保最后一列后没有多余逗号
                         "from topic_table_v1 " +
                         "where source['table'] = 'order_detail' " +
-                        "and `op` = 'c' and ts_ms is not null ");
+                        "and `op` = 'r' and ts_ms is not null ");
         tableEnv.createTemporaryView("order_detail", orderDetail);
-
-
-        orderDetail.execute().print();
-
+//        orderDetail.execute().print();
 //
         // 3. 过滤出 oder_info 数据: c
         Table orderInfo = tableEnv.sqlQuery(
@@ -58,7 +55,7 @@ public class DwdTradeOrderDetail extends BasesqlApp {
                         "from topic_table_v1 " +
                         "where " +
                         " source['table']='order_info' " +
-                        "and `op`='c' ");
+                        "and `op`='r' ");
         tableEnv.createTemporaryView("order_info", orderInfo);
 
 
@@ -72,9 +69,9 @@ public class DwdTradeOrderDetail extends BasesqlApp {
                         "from topic_table_v1 " +
                         "where  " +
                         " source['table']='order_detail_activity' " +
-                        "and `op`='c' ");
+                        "and `op`='r' ");
         tableEnv.createTemporaryView("order_detail_activity", orderDetailActivity);
-//       orderDetailActivity.execute().print();
+//        orderDetailActivity.execute().print();
         // 5. 过滤order_detail_coupon 表: insert
         Table orderDetailCoupon = tableEnv.sqlQuery(
                 "select " +
@@ -83,10 +80,9 @@ public class DwdTradeOrderDetail extends BasesqlApp {
                         "from topic_table_v1 " +
                         "where  " +
                         " source['table']='order_detail_coupon' " +
-                        "and `op`='c' ");
+                        "and `op`='r' ");
         tableEnv.createTemporaryView("order_detail_coupon", orderDetailCoupon);
 //        orderDetailCoupon.execute().print();
-
 
 
         Table result_V1 = tableEnv.sqlQuery(
@@ -116,10 +112,10 @@ public class DwdTradeOrderDetail extends BasesqlApp {
                         "on od.id=cou.order_detail_id ");
 
 //        result.execute().print();
-tableEnv.createTemporaryView("result_V1",result_V1);
-tableEnv.sqlQuery("Select * from result_V1").execute().print();
+        tableEnv.createTemporaryView("result_V1", result_V1);
+//        tableEnv.sqlQuery("Select * from result_V1").execute().print();
 
-       //  7. 写出到 kafka 中
+        //  7. 写出到 kafka 中
         tableEnv.executeSql(
                 "create table dwd_trade_order_detail(" +
                         "id string," +

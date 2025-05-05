@@ -24,6 +24,7 @@ public class DwdTradeOrderCancelDetail extends BasesqlApp {
     public void handle(StreamTableEnvironment tableEnv) {
         tableEnv.getConfig().setIdleStateRetention(Duration.ofSeconds(30 * 60 + 5));
         readOdsDb(tableEnv,constat.TOPIC_DWD_TRADE_ORDER_CANCEL);
+//        tableEnv.executeSql("select `op` from topic_table_v1").print();
         //从下单事实表中获取数据
         tableEnv.executeSql(
                 "create table dwd_trade_order_detail(" +
@@ -46,6 +47,7 @@ public class DwdTradeOrderCancelDetail extends BasesqlApp {
                         "ts bigint " +
                         ")" + Sqlutil.getKafkaDDL(constat.TOPIC_DWD_TRADE_ORDER_DETAIL, constat.TOPIC_DWD_TRADE_ORDER_DETAIL));
 //        tableEnv.executeSql("select * from dwd_trade_order_detail").print();
+
         // 3. 从 topic_db 过滤出订单取消数据
         Table orderCancel = tableEnv.sqlQuery("select " +
                 "`after`['id'] id," +
@@ -57,6 +59,8 @@ public class DwdTradeOrderCancelDetail extends BasesqlApp {
                 "and  `op`='u' and  `before`['order_status']='1001' " +
                 " and `after`['order_status']='1003' ");
         tableEnv.createTemporaryView("order_cancel", orderCancel);
+//        tableEnv.executeSql("select * from order_cancel").print();
+
         // 4. 订单取消表和下单表进行 join
         Table result = tableEnv.sqlQuery(
                 "select  " +
@@ -80,7 +84,7 @@ public class DwdTradeOrderCancelDetail extends BasesqlApp {
                         "from dwd_trade_order_detail od " +
                         "join order_cancel oc " +
                         "on od.order_id=oc.id ");
-//        result.execute().print();
+        result.execute().print();
         //订单取消表和下单表发送到kafka
         tableEnv.executeSql(
                 "create table dwd_trade_order_cancel_detail(" +

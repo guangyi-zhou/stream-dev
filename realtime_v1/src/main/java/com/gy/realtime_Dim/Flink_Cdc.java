@@ -28,7 +28,7 @@ public class Flink_Cdc {
         properties.setProperty("time.precision.mode","connect");
         MySqlSource<String> mySqlSource = MySqlSource.<String>builder()
                 .hostname("cdh03")
-//                .startupOptions(StartupOptions.earliest())
+//                .startupOptions(StartupOptions.initial())
                 .startupOptions(StartupOptions.latest())
                 .debeziumProperties(properties)
                 .port(3306)
@@ -49,14 +49,14 @@ public class Flink_Cdc {
         KafkaSink<String> sink = KafkaSink.<String>builder()
                 .setBootstrapServers(brokers)
                 .setRecordSerializer(KafkaRecordSerializationSchema.builder()
-                        .setTopic("realtime_v1_table_all_mysql_v2")
+                        .setTopic("stream_retail_db")
 //                                 realtime_v1_table_all_mysql_v2
                         .setValueSerializationSchema(new SimpleStringSchema())
                         .build()
                 )
                 .setDeliveryGuarantee(DeliveryGuarantee.AT_LEAST_ONCE)
                 .build();
-//        ds.sinkTo(sink);
+        ds.sinkTo(sink);
         env.execute("Print MySQL Snapshot + Binlog");
 
     }
