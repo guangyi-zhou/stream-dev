@@ -43,9 +43,9 @@ public   class  constat {
 
     public static final String TOPIC_DWD_USER_REGISTER = "dwd_user_register";
 
-    public static final String DORIS_FE_NODES = "cdh03:8110";
+    public static final String DORIS_FE_NODES = "cdh03:8033";
     public static final String TOPIC_dwd_base_db = "dwd_base_db";
 
-    public static final String DORIS_DATABASE = "realtime_v1";
+    public static final String DORIS_DATABASE = "stream_realtime";
 
 }

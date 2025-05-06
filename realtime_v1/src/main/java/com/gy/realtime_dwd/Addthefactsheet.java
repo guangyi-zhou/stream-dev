@@ -39,7 +39,7 @@ public class Addthefactsheet extends BasesqlApp {
                 "    or\n" +
                 "    (op='u' and `before`['sku_num'] is not null and (CAST(after['sku_num'] AS INT) > CAST(`before`['sku_num'] AS INT)))\n" +
                 ")");
-        cartInfo.execute().print();
+//        cartInfo.execute().print();
         tableEnv.executeSql(" create table " + constat.TOPIC_DWD_TRADE_CART_ADD + "(\n" +
                 "    id string,\n" +
                 "    user_id string,\n" +

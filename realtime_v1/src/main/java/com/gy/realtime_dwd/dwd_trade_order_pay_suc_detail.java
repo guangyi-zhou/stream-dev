@@ -68,7 +68,7 @@ public class dwd_trade_order_pay_suc_detail extends BasesqlApp {
                         "and before['refund_status'] is not null " +
                         "and `after`['refund_status']='1602'");
         tableEnv.createTemporaryView("payment_info", payment_info);
-        payment_info.execute().print();
+//        payment_info.execute().print();
 
         // 4. 过滤退单表中的退单成功的数据
         Table orderRefundInfo = tableEnv.sqlQuery(
@@ -82,7 +82,7 @@ public class dwd_trade_order_pay_suc_detail extends BasesqlApp {
                         "and `before`['refund_status'] is not null " +
                         "and `after`['refund_status']='0705'");
         tableEnv.createTemporaryView("order_refund_info", orderRefundInfo);
-        orderRefundInfo.execute().print();
+//        orderRefundInfo.execute().print();
 
         // 5. 过滤订单表中的退款成功的数据
         Table orderInfo = tableEnv.sqlQuery(
@@ -125,7 +125,7 @@ public class dwd_trade_order_pay_suc_detail extends BasesqlApp {
 //                        "and od.et <= pi.et + interval '5' second " +
                         "join base_dic for system_time as of pi.proc_time as dic " +
                         "on pi.payment_type=dic.dic_code ");
-        result.execute().print();
+//        result.execute().print();
 
         // 6. 写出到 kafka 中
         tableEnv.executeSql("create table dwd_trade_order_payment_success(" +

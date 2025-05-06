@@ -39,14 +39,14 @@ import org.apache.flink.util.Collector;
  */
 public class dws_trade_cart_add_uu_window extends BaseApp {
     public static void main(String[] args) throws Exception {
-        new dws_trade_cart_add_uu_window().start(10013, 4, "dws_trade_cart_add_uu_window", constat.TOPIC_DWD_TRADE_CART_ADD);
+        new dws_trade_cart_add_uu_window().start(10014, 4, "dws_trade_cart_add_uu_window", constat.TOPIC_DWD_TRADE_CART_ADD);
     }
 
     @Override
     public void handle(StreamExecutionEnvironment env, DataStreamSource<String> kafkaStrDS) {
         //转换类型 这个业务是干什么来着？加购表的   这个没有  只有kafka 不连维度表？
         SingleOutputStreamOperator<JSONObject> map = kafkaStrDS.map(JSON::parseObject);
-//        map.print();
+        map.print();
 //        2> {"sku_num":"1","user_id":"23","sku_id":"25","id":"80","ts":1744429839605}
         //水位线
 
@@ -131,7 +131,7 @@ public class dws_trade_cart_add_uu_window extends BaseApp {
                     }
                 }
         );
-//aggregate.print();
+aggregate.print();
 //3> CartADDUU(stt=2025-04-16 19:14:35, edt=2025-04-16 19:14:40, curDate=2025-04-16, cartAddUuCt=3)
 
         //没数据

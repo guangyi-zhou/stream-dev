@@ -18,7 +18,7 @@ import org.apache.flink.table.api.bridge.java.StreamTableEnvironment;
 public class DwsTrafficSourceKeywordPageViewWindow extends BasesqlApp
 {
     public static void main(String[] args) {
-        new DwsTrafficSourceKeywordPageViewWindow().start(10009,4,"dws_traffic_source_keyword_page_view_window");
+        new DwsTrafficSourceKeywordPageViewWindow().start(10007,4,"dws_traffic_source_keyword_page_view_window");
     }
     @Override
     public void handle(StreamTableEnvironment tableEnv) {
@@ -70,8 +70,8 @@ public class DwsTrafficSourceKeywordPageViewWindow extends BasesqlApp
                 " 'connector' = 'doris'," +
                 " 'fenodes' = '" + constat.DORIS_FE_NODES + "'," +
                 "  'table.identifier' = '" + constat.DORIS_DATABASE + ".dws_traffic_source_keyword_page_view_window'," +
-                "  'username' = 'admin'," +
-                "  'password' = 'admin', " +
+                "  'username' = 'root'," +
+                "  'password' = 'root', " +
                 "  'sink.properties.format' = 'json', " +
                 "  'sink.buffer-count' = '2', " +
                 "  'sink.buffer-size' = '2048'," +
@@ -79,7 +79,7 @@ public class DwsTrafficSourceKeywordPageViewWindow extends BasesqlApp
                 "  'sink.properties.read_json_by_line' = 'true' " +
                 ")");
         resTable.executeInsert("dws_traffic_source_keyword_page_view_window");
-//    resTable.execute().print();
+    resTable.execute().print();
 
     }
 

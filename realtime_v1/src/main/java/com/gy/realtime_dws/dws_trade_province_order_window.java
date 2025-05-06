@@ -156,7 +156,7 @@ public class dws_trade_province_order_window extends BaseApp {
 //        2> TablepenviceOrderBean(stt=null, edt=null, curDate=null, provinceId=1, provinceName=, orderCount=null, orderAmount=-6029.10, ts=null, orderIdSet=[1716])
 
 //        //TODO 7.开窗
-        WindowedStream<TablepenviceOrderBean, String, TimeWindow> windowDS = provinceIdKeyedDS.window(TumblingEventTimeWindows.of(org.apache.flink.streaming.api.windowing.time.Time.seconds(10)));
+        WindowedStream<TablepenviceOrderBean, String, TimeWindow> windowDS = provinceIdKeyedDS.window(TumblingEventTimeWindows.of(org.apache.flink.streaming.api.windowing.time.Time.seconds(2)));
 //
 //        //TODO 8.聚合
         SingleOutputStreamOperator<TablepenviceOrderBean> reduceDS = windowDS.reduce(
@@ -184,7 +184,7 @@ public class dws_trade_province_order_window extends BaseApp {
                 }
         );
 
-//        reduceDS.print();
+        reduceDS.print();
 //        1> TablepenviceOrderBean(stt=2025-04-13 22:28:30, edt=2025-04-13 22:28:40, curDate=2025-04-13, provinceId=33, provinceName=, orderCount=76, orderAmount=153193.50, ts=null, orderIdSet=[89, 1583, 151, 1932, 154, 1216, 1930, 156, 1851, 996, 118, 955, 51, 1735, 54, 55, 57, 1908, 18, 1470, 1074, 162, 1745, 1149, 1666, 168, 763, 1587, 169, 1223, 1586, 1222, 966, 1906, 1707, 1946, 1901, 1080, 66, 23, 29, 130, 1679, 1831, 134, 1874, 179, 1278, 1870, 139, 72, 74, 1516, 34, 38, 39, 1693, 1646, 1921, 143, 1128, 1721, 1446, 1523, 1841, 102, 1245, 2015, 1200, 989, 83, 1968, 949, 1802, 1406, 42])
 
 //        //TODO 9.关联省份维度
@@ -204,11 +204,12 @@ public class dws_trade_province_order_window extends BaseApp {
             @Override
             public TablepenviceOrderBean map(TablepenviceOrderBean tablepenviceOrderBean) throws Exception {
                 String provinceId = tablepenviceOrderBean.getProvinceId();
-                JSONObject row = Hbaseutli.getRow(hbaseConn, "realtime_v1", "dim_base_province", provinceId, JSONObject.class);
+                JSONObject row = Hbaseutli.getRow(hbaseConn, "stream_retail", "dim_base_province", provinceId, JSONObject.class);
                 tablepenviceOrderBean.setProvinceName(row.getString("name"));
                 return tablepenviceOrderBean;
             }
         });
+//        stream_retail:dim_base_province
         SingleOutputStreamOperator<String> map1 = map.map(new RichMapFunction<TablepenviceOrderBean, String>() {
             @Override
             public String map(TablepenviceOrderBean tablepenviceOrderBean) throws Exception {

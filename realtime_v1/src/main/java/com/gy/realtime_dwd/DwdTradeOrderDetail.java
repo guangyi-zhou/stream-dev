@@ -42,7 +42,7 @@ public class DwdTradeOrderDetail extends BasesqlApp {
                         "ts_ms " + // 确保最后一列后没有多余逗号
                         "from topic_table_v1 " +
                         "where source['table'] = 'order_detail' " +
-                        "and `op` = 'r' and ts_ms is not null ");
+                        "and `op` = 'c' and ts_ms is not null ");
         tableEnv.createTemporaryView("order_detail", orderDetail);
 //        orderDetail.execute().print();
 //
@@ -55,7 +55,7 @@ public class DwdTradeOrderDetail extends BasesqlApp {
                         "from topic_table_v1 " +
                         "where " +
                         " source['table']='order_info' " +
-                        "and `op`='r' ");
+                        "and `op`='c' ");
         tableEnv.createTemporaryView("order_info", orderInfo);
 
 
@@ -69,7 +69,7 @@ public class DwdTradeOrderDetail extends BasesqlApp {
                         "from topic_table_v1 " +
                         "where  " +
                         " source['table']='order_detail_activity' " +
-                        "and `op`='r' ");
+                        "and `op`='c' ");
         tableEnv.createTemporaryView("order_detail_activity", orderDetailActivity);
 //        orderDetailActivity.execute().print();
         // 5. 过滤order_detail_coupon 表: insert
@@ -80,7 +80,7 @@ public class DwdTradeOrderDetail extends BasesqlApp {
                         "from topic_table_v1 " +
                         "where  " +
                         " source['table']='order_detail_coupon' " +
-                        "and `op`='r' ");
+                        "and `op`='c' ");
         tableEnv.createTemporaryView("order_detail_coupon", orderDetailCoupon);
 //        orderDetailCoupon.execute().print();
 

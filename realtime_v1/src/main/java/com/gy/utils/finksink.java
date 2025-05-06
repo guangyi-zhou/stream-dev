@@ -16,7 +16,6 @@ import org.apache.flink.connector.kafka.sink.KafkaRecordSerializationSchema;
 import org.apache.flink.connector.kafka.sink.KafkaSink;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
-
 import javax.annotation.Nullable;
 import java.util.Properties;
 
@@ -72,10 +71,10 @@ public class finksink {
         DorisSink<String> sink = DorisSink.<String>builder()
                 .setDorisReadOptions(DorisReadOptions.builder().build())
                 .setDorisOptions(DorisOptions.builder() // 设置 doris 的连接参数
-                        .setFenodes("cdh03:8110")
+                        .setFenodes("cdh03:8033")
                         .setTableIdentifier(constat.DORIS_DATABASE + "." + tableName)
-                        .setUsername("admin")
-                        .setPassword("admin")
+                        .setUsername("root")
+                        .setPassword("root")
                         .build())
                 .setDorisExecutionOptions(DorisExecutionOptions.builder() // 执行参数
                         //.setLabelPrefix("doris-label")  // stream-load 导入的时候的 label 前缀

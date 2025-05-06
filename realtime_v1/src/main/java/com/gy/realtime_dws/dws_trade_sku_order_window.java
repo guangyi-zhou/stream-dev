@@ -266,7 +266,7 @@ public class dws_trade_sku_order_window extends BaseApp {
                     @Override
                     public TradeSkuOrderBean map(TradeSkuOrderBean orderBean) throws Exception {
                         String skuId = orderBean.getSkuId();
-                        JSONObject skuInfoJsonObj = Hbaseutli.getRow(hbaseConn,"realtime_v1", "dim_sku_info", skuId, JSONObject.class);
+                        JSONObject skuInfoJsonObj = Hbaseutli.getRow(hbaseConn,constat.HBASE_NAMESPACE, "dim_sku_info", skuId, JSONObject.class);
                         orderBean.setSkuName(skuInfoJsonObj.getString("sku_name"));
                         orderBean.setSpuId(skuInfoJsonObj.getString("spu_id"));
                         orderBean.setCategory3Id(skuInfoJsonObj.getString("category3_id"));
