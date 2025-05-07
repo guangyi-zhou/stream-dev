@@ -80,11 +80,7 @@
                 <artifactId>flink-connector-kafka</artifactId>
                 <version>${flink.version}</version>
             </dependency>
-            <dependency>
-                <groupId>com.janeluo</groupId>
-                <artifactId>ikanalyzer</artifactId>
-                <version>2012_u6</version>
-            </dependency>
+
             <!--        flink RocksDB 依赖-->
             <dependency>
                 <groupId>org.apache.flink</groupId>
@@ -169,11 +165,6 @@
                 <artifactId>hadoop-common</artifactId>
                 <version>${hadoop.version}</version>
             </dependency>
-            <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>slf4j-log4j12</artifactId>
-                <version>1.7.36</version>
-            </dependency>
 
             <!--如果保存检查点到hdfs上，需要引入此依赖-->
             <dependency>
@@ -183,17 +174,17 @@
                 <!--                <scope>provided</scope>-->
             </dependency>
 
-            <!--            <dependency>-->
-            <!--                <groupId>org.apache.hadoop</groupId>-->
-            <!--                <artifactId>hadoop-auth</artifactId>-->
-            <!--                &lt;!&ndash;                <scope>provided</scope>&ndash;&gt;-->
-            <!--                <exclusions>-->
-            <!--                    <exclusion>-->
-            <!--                        <groupId>org.slf4j</groupId>-->
-            <!--                        <artifactId>slf4j-reload4j</artifactId>-->
-            <!--                    </exclusion>-->
-            <!--                </exclusions>-->
-            <!--            </dependency>-->
+            <dependency>
+                <groupId>org.apache.hadoop</groupId>
+                <artifactId>hadoop-auth</artifactId>
+                <!--                <scope>provided</scope>-->
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.slf4j</groupId>
+                        <artifactId>slf4j-reload4j</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
             <!-- hadoop 相关依赖 结束 -->
 
 
@@ -205,25 +196,6 @@
                 <!--                <scope>provided</scope>-->
             </dependency>
 
-
-            <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>slf4j-api</artifactId>
-                <version>1.7.25</version>
-                <!--                <scope>provided</scope>-->
-            </dependency>
-
-            <dependency>
-                <groupId>org.apache.logging.log4j</groupId>
-                <artifactId>log4j-to-slf4j</artifactId>
-                <version>2.14.0</version>
-                <!--                <scope>provided</scope>-->
-            </dependency>
-            <dependency>
-                <groupId>ch.qos.logback</groupId>
-                <artifactId>logback-classic</artifactId>
-                <version>1.2.3</version>
-            </dependency>
             <dependency>
                 <groupId>org.apache.logging.log4j</groupId>
                 <artifactId>log4j-to-slf4j</artifactId>
@@ -280,31 +252,36 @@
                 <version>${okhttp.version}</version>
             </dependency>
 
-            <!--            &lt;!&ndash; parquet 文件格式相关依赖 开始 &ndash;&gt;-->
-            <!--            <dependency>-->
-            <!--                <groupId>org.apache.parquet</groupId>-->
-            <!--                <artifactId>parquet-avro</artifactId>-->
-            <!--                <version>1.10.0</version>-->
-            <!--            </dependency>-->
+            <!-- parquet 文件格式相关依赖 开始 -->
+            <dependency>
+                <groupId>org.apache.parquet</groupId>
+                <artifactId>parquet-avro</artifactId>
+                <version>1.10.0</version>
+            </dependency>
 
-            <!--            <dependency>-->
-            <!--                <groupId>org.apache.parquet</groupId>-->
-            <!--                <artifactId>parquet-hadoop</artifactId>-->
-            <!--                <version>1.10.0</version>-->
-            <!--            </dependency>-->
-            <!--            <dependency>-->
-            <!--                <groupId>org.apache.flink</groupId>-->
-            <!--                <artifactId>flink-parquet</artifactId>-->
-            <!--                <version>1.8.0</version>-->
-            <!--            </dependency>-->
-            <!--            &lt;!&ndash; parquet 文件格式相关依赖 结束 &ndash;&gt;-->
-            <!--            &lt;!&ndash; mysql 相关依赖 开始 &ndash;&gt;-->
-            <!--            <dependency>-->
-            <!--                <groupId>commons-dbutils</groupId>-->
-            <!--                <artifactId>commons-dbutils</artifactId>-->
-            <!--                <version>1.7</version>-->
-            <!--            </dependency>-->
-            <!--            &lt;!&ndash; mysql 相关依赖 结束 &ndash;&gt;-->
+            <dependency>
+                <groupId>org.apache.parquet</groupId>
+                <artifactId>parquet-hadoop</artifactId>
+                <version>1.10.0</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.flink</groupId>
+                <artifactId>flink-parquet</artifactId>
+                <version>1.8.0</version>
+            </dependency>
+            <!-- parquet 文件格式相关依赖 结束 -->
+
+            <!-- mysql 相关依赖 开始 -->
+
+
+            <dependency>
+                <groupId>commons-dbutils</groupId>
+                <artifactId>commons-dbutils</artifactId>
+                <version>1.7</version>
+            </dependency>
+
+            <!-- mysql 相关依赖 结束 -->
         </dependencies>
     </dependencyManagement>
 
