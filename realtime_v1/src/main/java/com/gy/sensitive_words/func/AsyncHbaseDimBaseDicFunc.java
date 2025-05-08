@@ -50,13 +50,17 @@ public class AsyncHbaseDimBaseDicFunc extends RichAsyncFunction<JSONObject,JSONO
     @Override
     public void asyncInvoke(JSONObject input, ResultFuture<JSONObject> resultFuture) throws Exception {
         String appraise = input.getJSONObject("after").getString("appraise");
-        String rowKey = MD5Hash.getMD5AsHex(appraise.getBytes(StandardCharsets.UTF_8));
-        String cachedDicName = cache.getIfPresent(rowKey);
-        if (cachedDicName != null) {
-            enrichAndEmit(input, cachedDicName, resultFuture);
+//        String rowKey = MD5Hash.getMD5AsHex(appraise.getBytes(StandardCharsets.UTF_8));
+//
+//        String cachedDicName = cache.getIfPresent(rowKey);
+//        System.out.println(rowKey);
+        if (appraise != null) {
+            enrichAndEmit(input, appraise, resultFuture);
+
         }
+
         CompletableFuture.supplyAsync(() -> {
-            Get get = new Get(rowKey.getBytes(StandardCharsets.UTF_8));
+            Get get = new Get(appraise.getBytes(StandardCharsets.UTF_8));
             try {
                 Result result = dimTable.get(get);
                 if (result.isEmpty()) {
@@ -68,7 +72,7 @@ public class AsyncHbaseDimBaseDicFunc extends RichAsyncFunction<JSONObject,JSONO
             }
         }).thenAccept(dicName -> {
             if (dicName != null) {
-                cache.put(rowKey, dicName);
+                cache.put(appraise, dicName);
                 enrichAndEmit(input, dicName, resultFuture);
             }else {
                 enrichAndEmit(input, "N/A", resultFuture);

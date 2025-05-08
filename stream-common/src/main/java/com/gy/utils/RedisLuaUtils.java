@@ -21,11 +21,11 @@ import java.util.*;
 
 public class RedisLuaUtils {
     private static final Logger logger = LoggerFactory.getLogger(RedisLuaUtils.class);
-    private static final String REDIS_HOST = ConfigUtils.getString("redis.host");
-    private static final int REDIS_PORT = ConfigUtils.getInt("redis.port");
-    private static final String REDIS_USER = ConfigUtils.getString("redis.user");
-    private static final String REDIS_PASSWORD = ConfigUtils.getString("redis.pwd");
-    private static final int REDIS_DB = ConfigUtils.getInt("redis.blacklist.db");
+    private static final String REDIS_HOST = "cdh03";
+    private static final int REDIS_PORT = 6379;
+    private static final String REDIS_USER = "";
+    private static final String REDIS_PASSWORD = "123456";
+    private static final int REDIS_DB = 0;
     private static final String SET_KEY = "sensitive_words";
 
     // Lua脚本（支持批量/单条查询）

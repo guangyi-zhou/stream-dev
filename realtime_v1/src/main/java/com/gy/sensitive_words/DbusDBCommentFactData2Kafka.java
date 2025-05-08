@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 
 import com.gy.sensitive_words.func.AsyncHbaseDimBaseDicFunc;
+import com.gy.sensitive_words.func.IntervalJoinOrderCommentAndOrderInfoFunc;
 import com.gy.stream.utils.CommonGenerateTempLate;
 import com.gy.stream.utils.SensitiveWordsUtils;
 import com.gy.utils.ConfigUtils;
@@ -15,6 +16,9 @@ import org.apache.flink.api.common.eventtime.WatermarkStrategy;
 import org.apache.flink.api.common.functions.RichMapFunction;
 import org.apache.flink.api.common.serialization.SimpleStringSchema;
 import org.apache.flink.configuration.Configuration;
+import org.apache.flink.connector.base.DeliveryGuarantee;
+import org.apache.flink.connector.kafka.sink.KafkaRecordSerializationSchema;
+import org.apache.flink.connector.kafka.sink.KafkaSink;
 import org.apache.flink.connector.kafka.source.KafkaSource;
 import org.apache.flink.connector.kafka.source.enumerator.initializer.OffsetsInitializer;
 import org.apache.flink.streaming.api.datastream.*;
@@ -57,7 +61,8 @@ public class DbusDBCommentFactData2Kafka {
 
         System.setProperty("HADOOP_USER_NAME", "root");
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
-        EnvironmentSettingUtils.defaultParameter(env);
+//        EnvironmentSettingUtils.defaultParameter(env);
+        env.setParallelism(15);
 
 //        // 评论表 取数
         KafkaSource<String> source = KafkaSource.<String>builder()
@@ -106,7 +111,7 @@ public class DbusDBCommentFactData2Kafka {
                 .map(JSON::parseObject)
                 .filter(json -> json.getJSONObject("source").getString("table").equals("comment_info"))
                 .keyBy(json -> json.getJSONObject("after").getString("appraise"));
-
+//        {"op":"c","after":{"create_time":1746530012000,"user_id":695,"appraise":"1201","comment_txt":"评论内容：32275618265338265829374368637213422923954648182142","nick_name":"阿义","sku_id":15,"id":262,"spu_id":4,"order_id":2485},"source":{"thread":660,"server_id":1,"version":"1.9.7.Final","file":"mysql_bin.000017","connector":"mysql","pos":19585055,"name":"mysql_binlog_source","row":0,"ts_ms":1746501827000,"snapshot":"false","db":"stream_retail","table":"comment_info"},"ts_ms":1746501827560}
         //进行异步io的链接hbase表
         DataStream<JSONObject> enrichedStream = AsyncDataStream
                 .unorderedWait(
@@ -117,6 +122,7 @@ public class DbusDBCommentFactData2Kafka {
                         100
                 ).uid("async_hbase_dim_base_dic_func")
                 .name("async_hbase_dim_base_dic_func");
+//        enrichedStream.print();
 
         SingleOutputStreamOperator<JSONObject> orderCommentMap = enrichedStream.map(new RichMapFunction<JSONObject, JSONObject>() {
                     @Override
@@ -170,55 +176,78 @@ public class DbusDBCommentFactData2Kafka {
                 return resultObj;
             }
         }).uid("map-order_info_data").name("map-order_info_data");
-        orderInfoMapDs.print();
+//        orderInfoMapDs.print();
 
-//        // orderCommentMap.order_id join orderInfoMapDs.id
-//        KeyedStream<JSONObject, String> keyedOrderCommentStream = orderCommentMap.keyBy(data -> data.getString("order_id"));
-//        KeyedStream<JSONObject, String> keyedOrderInfoStream = orderInfoMapDs.keyBy(data -> data.getString("id"));
-//
-//        SingleOutputStreamOperator<JSONObject> orderMsgAllDs = keyedOrderCommentStream.intervalJoin(keyedOrderInfoStream)
-//                .between(Time.minutes(-1), Time.minutes(1))
-//                .process(new IntervalJoinOrderCommentAndOrderInfoFunc())
-//                .uid("interval_join_order_comment_and_order_info_func").name("interval_join_order_comment_and_order_info_func");
-//
-//        SingleOutputStreamOperator<JSONObject> supplementDataMap = orderMsgAllDs.map(new RichMapFunction<JSONObject, JSONObject>() {
-//            @Override
-//            public JSONObject map(JSONObject jsonObject) {
-//                jsonObject.put("commentTxt", CommonGenerateTempLate.GenerateComment(jsonObject.getString("dic_name"), jsonObject.getString("info_trade_body")));
-//                return jsonObject;
-//            }
-//        }).uid("map-generate_comment").name("map-generate_comment");
-//
-//        SingleOutputStreamOperator<JSONObject> suppleMapDs = supplementDataMap.map(new RichMapFunction<JSONObject, JSONObject>() {
-//            private transient Random random;
-//
-//            @Override
-//            public void open(Configuration parameters){
-//                random = new Random();
-//            }
-//
-//            @Override
-//            public JSONObject map(JSONObject jsonObject){
-//                if (random.nextDouble() < 0.2) {
-//                    jsonObject.put("commentTxt", jsonObject.getString("commentTxt") + "," + SensitiveWordsUtils.getRandomElement(sensitiveWordsLists));
-//                    System.err.println("change commentTxt: " + jsonObject);
-//                }
-//                return jsonObject;
-//            }
-//        }).uid("map-sensitive-words").name("map-sensitive-words");
-//
-//        SingleOutputStreamOperator<JSONObject> suppleTimeFieldDs = suppleMapDs.map(new RichMapFunction<JSONObject, JSONObject>() {
-//            @Override
-//            public JSONObject map(JSONObject jsonObject){
-//                jsonObject.put("ds", DateTimeUtils.format(new Date(jsonObject.getLong("ts_ms")), "yyyyMMdd"));
-//                return jsonObject;
-//            }
-//        }).uid("add json ds").name("add json ds");
-//
+//         orderCommentMap.order_id join orderInfoMapDs.id
+        KeyedStream<JSONObject, String> keyedOrderCommentStream = orderCommentMap.keyBy(data -> data.getString("order_id"));
+        KeyedStream<JSONObject, String> keyedOrderInfoStream = orderInfoMapDs.keyBy(data -> data.getString("id"));
+
+
+        SingleOutputStreamOperator<JSONObject> orderMsgAllDs = keyedOrderCommentStream.intervalJoin(keyedOrderInfoStream)
+                .between(Time.minutes(-1), Time.minutes(1))
+                .process(new IntervalJoinOrderCommentAndOrderInfoFunc())
+                .uid("interval_join_order_comment_and_order_info_func").name("interval_join_order_comment_and_order_info_func");
+
+        //连接硅基流动,生成敏感词,与commentTxt进行拼接
+        SingleOutputStreamOperator<JSONObject> supplementDataMap = orderMsgAllDs.map(new RichMapFunction<JSONObject, JSONObject>() {
+            @Override
+            public JSONObject map(JSONObject jsonObject) {
+                jsonObject.put("commentTxt", CommonGenerateTempLate.GenerateComment(jsonObject.getString("dic_name"), jsonObject.getString("info_trade_body")));
+                return jsonObject;
+            }
+        }).uid("map-generate_comment").name("map-generate_comment");
+//        supplementDataMap.print();
+        //读取上流的数据,按20%的概率去再评论字段后面随机加上一句敏感词,
+        SingleOutputStreamOperator<JSONObject> suppleMapDs = supplementDataMap.map(new RichMapFunction<JSONObject, JSONObject>() {
+            //创建随机的一个方法
+            private transient Random random;
+
+            @Override
+            public void open(Configuration parameters){
+                random = new Random();
+            }
+
+            @Override
+            public JSONObject map(JSONObject jsonObject){
+                //随机生成0.0到1.0(不包括)之间的随机的双精度小数,如果小于1.0则执行if判断里面的数据
+                if (random.nextDouble() < 0.2) {
+                    jsonObject.put("commentTxt", jsonObject.getString("commentTxt") + "," + SensitiveWordsUtils.getRandomElement(sensitiveWordsLists));
+                    System.err.println("change commentTxt: " + jsonObject);
+                }
+                return jsonObject;
+            }
+        }).uid("map-sensitive-words").name("map-sensitive-words");
+
+//        suppleMapDs.print();
+
+        SingleOutputStreamOperator<JSONObject> suppleTimeFieldDs = suppleMapDs.map(new RichMapFunction<JSONObject, JSONObject>() {
+            @Override
+            public JSONObject map(JSONObject jsonObject){
+                jsonObject.put("ds", DateTimeUtils.format(new Date(jsonObject.getLong("ts_ms")), "yyyyMMdd"));
+                return jsonObject;
+            }
+        }).uid("add json ds").name("add json ds");
+        suppleTimeFieldDs.print();
+
 //        suppleTimeFieldDs.map(js -> js.toJSONString())
 //                .sinkTo(
 //                KafkaUtils.buildKafkaSink(kafka_botstrap_servers, kafka_db_fact_comment_topic)
 //        ).uid("kafka_db_fact_comment_sink").name("kafka_db_fact_comment_sink");
+
+
+//        SingleOutputStreamOperator<String> suppleTimeFieldSInkDs = suppleTimeFieldDs.map(jp -> jp.toJSONString());
+//
+//        KafkaSink<String> sink = KafkaSink.<String>builder()
+//                .setBootstrapServers("cdh02:9092")
+//                .setRecordSerializer(KafkaRecordSerializationSchema.builder()
+//                        .setTopic("realtime_v2_fact_comment_db")
+//                        .setValueSerializationSchema(new SimpleStringSchema())
+//                        .build()
+//                )
+//                .setDeliveryGuarantee(DeliveryGuarantee.AT_LEAST_ONCE)
+//                .build();
+//
+//        suppleTimeFieldSInkDs.sinkTo(sink);
 
 
         env.execute();
