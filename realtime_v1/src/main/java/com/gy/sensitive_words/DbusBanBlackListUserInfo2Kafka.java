@@ -2,13 +2,23 @@ package com.gy.sensitive_words;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.github.houbb.sensitive.word.core.SensitiveWordHelper;
+import com.gy.constat.constat;
 import com.gy.sensitive_words.func.FilterBloomDeduplicatorFunc;
 import com.gy.sensitive_words.func.MapCheckRedisSensitiveWordsFunc;
 import com.gy.utils.EnvironmentSettingUtils;
 import com.gy.utils.KafkaUtils;
+import com.gy.utils.finksink;
+import org.apache.doris.flink.cfg.DorisExecutionOptions;
+import org.apache.doris.flink.cfg.DorisOptions;
+import org.apache.doris.flink.cfg.DorisReadOptions;
+import org.apache.doris.flink.sink.DorisSink;
+import org.apache.doris.flink.sink.writer.serializer.SimpleStringSerializer;
 import org.apache.flink.api.common.eventtime.WatermarkStrategy;
 import org.apache.flink.api.common.functions.RichMapFunction;
 import org.apache.flink.api.common.serialization.SimpleStringSchema;
+import org.apache.flink.connector.base.DeliveryGuarantee;
+import org.apache.flink.connector.kafka.sink.KafkaRecordSerializationSchema;
+import org.apache.flink.connector.kafka.sink.KafkaSink;
 import org.apache.flink.connector.kafka.source.KafkaSource;
 import org.apache.flink.connector.kafka.source.enumerator.initializer.OffsetsInitializer;
 import org.apache.flink.streaming.api.datastream.DataStreamSource;
@@ -17,6 +27,7 @@ import org.apache.flink.streaming.api.datastream.SingleOutputStreamOperator;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 
 import java.util.List;
+import java.util.Properties;
 
 /**
  * @Package com.gy.sensitive_words.DbusBanBlackListUserInfo2Kafka
@@ -33,7 +44,7 @@ public class DbusBanBlackListUserInfo2Kafka {
         System.setProperty("HADOOP_USER_NAME","root");
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
 
-//        EnvironmentSettingUtils.defaultParameter(env);
+        EnvironmentSettingUtils.defaultParameter(env);
 
         KafkaSource<String> source = KafkaSource.<String>builder()
                 .setBootstrapServers("cdh02:9092")
@@ -63,8 +74,6 @@ public class DbusBanBlackListUserInfo2Kafka {
 
         SingleOutputStreamOperator<JSONObject> bloomFilterDs = mapJsonStr.keyBy(data -> data.getLong("order_id"))
                 .filter(new FilterBloomDeduplicatorFunc(1000000, 0.01));
-//        bloomFilterDs.print();
-
 //        bloomFilterDs.print("布隆");
         SingleOutputStreamOperator<JSONObject> SensitiveWordsDs = bloomFilterDs.map(new MapCheckRedisSensitiveWordsFunc())
                 .uid("MapCheckRedisSensitiveWord")
@@ -79,7 +88,7 @@ public class DbusBanBlackListUserInfo2Kafka {
                     String msg = jsonObject.getString("msg");
                     List<String> msgSen = SensitiveWordHelper.findAll(msg);
                     if (msgSen.size() > 0) {
-                        jsonObject.put("is_violation", "P1");
+                        jsonObject.put("violation_grade", "P1");
                         jsonObject.put("violation_msg", String.join(", ", msgSen));
                     }
                 }
@@ -87,17 +96,30 @@ public class DbusBanBlackListUserInfo2Kafka {
             }
         }).uid("second sensitive word check").name("second sensitive word check");
 
-//        secondCheckMap.print();
+        secondCheckMap.print();
 
-//        secondCheckMap.map(data -> data.toJSONString())
-//                .sinkTo(
-//                        KafkaUtils.buildKafkaSink(kafka_botstrap_servers, kafka_result_sensitive_words_topic)
+
+
+
+        SingleOutputStreamOperator<String> secondCheckMapSInkDs = secondCheckMap.map(jp -> jp.toJSONString());
+
+//        KafkaSink<String> sink = KafkaSink.<String>builder()
+//                .setBootstrapServers("cdh01:9092,cdh02:9092,cdh03:9092")
+//                .setRecordSerializer(KafkaRecordSerializationSchema.builder()
+//                        .setTopic("realtime_v2_result_sensitive_words_user")
+//                        .setValueSerializationSchema(new SimpleStringSchema())
+//                        .build()
 //                )
-//                .uid("sink to kafka result sensitive words topic")
-//                .name("sink to kafka result sensitive words topic");
+//                .setDeliveryGuarantee(DeliveryGuarantee.AT_LEAST_ONCE)
+//                .build();
+//
+//        secondCheckMapSInkDs.sinkTo(sink);
+
+        SingleOutputStreamOperator<String> map = secondCheckMap.map(JSON::toString);
+//        map.print();
+//        //写入doris
+        map.sinkTo(finksink.getDorisSink("result_sensitive_words_user"));
 
         env.execute();
     }
-
-
 }

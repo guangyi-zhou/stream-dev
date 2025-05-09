@@ -23,7 +23,7 @@ public class RedisLuaUtils {
     private static final Logger logger = LoggerFactory.getLogger(RedisLuaUtils.class);
     private static final String REDIS_HOST = "cdh03";
     private static final int REDIS_PORT = 6379;
-    private static final String REDIS_USER = "";
+    private static final String REDIS_USER = "default";
     private static final String REDIS_PASSWORD = "123456";
     private static final int REDIS_DB = 0;
     private static final String SET_KEY = "sensitive_words";

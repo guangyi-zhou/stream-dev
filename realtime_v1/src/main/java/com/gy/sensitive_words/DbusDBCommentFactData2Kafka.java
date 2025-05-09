@@ -227,7 +227,7 @@ public class DbusDBCommentFactData2Kafka {
                 return jsonObject;
             }
         }).uid("add json ds").name("add json ds");
-        suppleTimeFieldDs.print();
+//        suppleTimeFieldDs.print();
 
 //        suppleTimeFieldDs.map(js -> js.toJSONString())
 //                .sinkTo(
@@ -235,21 +235,17 @@ public class DbusDBCommentFactData2Kafka {
 //        ).uid("kafka_db_fact_comment_sink").name("kafka_db_fact_comment_sink");
 
 
-//        SingleOutputStreamOperator<String> suppleTimeFieldSInkDs = suppleTimeFieldDs.map(jp -> jp.toJSONString());
-//
-//        KafkaSink<String> sink = KafkaSink.<String>builder()
-//                .setBootstrapServers("cdh02:9092")
-//                .setRecordSerializer(KafkaRecordSerializationSchema.builder()
-//                        .setTopic("realtime_v2_fact_comment_db")
-//                        .setValueSerializationSchema(new SimpleStringSchema())
-//                        .build()
-//                )
-//                .setDeliveryGuarantee(DeliveryGuarantee.AT_LEAST_ONCE)
-//                .build();
-//
-//        suppleTimeFieldSInkDs.sinkTo(sink);
-
-
+        SingleOutputStreamOperator<String> suppleTimeFieldSInkDs = suppleTimeFieldDs.map(jp -> jp.toJSONString());
+        KafkaSink<String> sink = KafkaSink.<String>builder()
+                .setBootstrapServers("cdh02:9092")
+                .setRecordSerializer(KafkaRecordSerializationSchema.builder()
+                        .setTopic("realtime_v2_fact_comment_db")
+                        .setValueSerializationSchema(new SimpleStringSchema())
+                        .build()
+                )
+                .setDeliveryGuarantee(DeliveryGuarantee.AT_LEAST_ONCE)
+                .build();
+        suppleTimeFieldSInkDs.sinkTo(sink);
         env.execute();
     }
 }
