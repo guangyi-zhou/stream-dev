@@ -25,14 +25,14 @@ logger = logging.getLogger(__name__)
 RETRY_MAX_ATTEMPTS = 3
 RETRY_WAIT_FIXED = 2000
 num_processes = 4
-properties = public_func.get_java_properties()
+
 
 db_config = {
-    'host': properties.get("mysql.host"),
-    'port': properties.get("mysql.port"),
-    'user': properties.get("mysql.user"),
-    'password': properties.get("mysql.pwd"),
-    'database': properties.get("mysql.spider.db")
+    'host': "cdh03",
+    'port': "3306",
+    'user': "root",
+    'password': "root",
+    'database': "weather"
 }
 
 
