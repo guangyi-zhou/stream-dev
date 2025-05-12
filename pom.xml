@@ -11,6 +11,7 @@
     <modules>
         <module>realtime_v1</module>
         <module>stream-common</module>
+        <module>dharma_disk_v1</module>
     </modules>
 
     <properties>

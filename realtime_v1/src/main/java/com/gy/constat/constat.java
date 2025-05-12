@@ -7,7 +7,7 @@ package com.gy.constat;
  * @description: 常量类
  */
 public   class  constat {
-    public static final String KAFKA_BROKERS = "cdh02:9092";
+    public static final String KAFKA_BROKERS = "cdh01:9092,cdh02:9092,cdh03:9092";
 
     public static final String TOPIC_DB = "stream_retail_db";
     public static final String TOPIC_LOG = "stream_retail_log";

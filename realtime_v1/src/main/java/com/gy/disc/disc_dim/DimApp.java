@@ -1,5 +1,4 @@
-package com.gy.realtime_dim;
-
+package com.gy.disc.disc_dim;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
@@ -11,7 +10,6 @@ import com.gy.realtime_dim.flinkfcation.flinksinkHbase;
 import com.gy.realtime_dim.flinkfcation.flinksorceutil;
 import com.gy.utils.Hbaseutli;
 import com.ververica.cdc.connectors.mysql.source.MySqlSource;
-
 import org.apache.flink.api.common.eventtime.WatermarkStrategy;
 import org.apache.flink.api.common.functions.MapFunction;
 import org.apache.flink.api.common.functions.RichMapFunction;
@@ -28,19 +26,23 @@ import org.apache.flink.util.Collector;
 import org.apache.hadoop.hbase.client.Connection;
 
 /**
- * @Package realtime_Dim.Dim_App
+ * @Package com.gy.disc.disc_dim.DimApp
  * @Author guangyi_zhou
- * @Date 2025/4/8 19:31
- * @description: 读取
+ * @Date 2025/5/12 13:40
+ * @description: 对数据进简单的etl清晰, 然后把维度数据导入到Hbase
  */
-public class Dim_App extends BaseApp {
-
-    public static void main(String[] args) throws Exception {
-        new Dim_App().start(10001,1,"dim_app", constat.TOPIC_DB);
+public class DimApp extends BaseApp {
+    public static void main(String[] args) {
+        try {
+            new DimApp().start(1051, 1, "ckAndGroupId", "dmp_db");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
-
+    @Override
     public void handle(StreamExecutionEnvironment env, DataStreamSource<String> kafkaStrDS) {
+        //对数据进行简单的etl处理
         SingleOutputStreamOperator<JSONObject> kafkaDs = kafkaStrDS.process(new ProcessFunction<String, JSONObject>() {
             @Override
             public void processElement(String s, ProcessFunction<String, JSONObject>.Context context, Collector<JSONObject> collector) throws Exception {
@@ -60,28 +62,18 @@ public class Dim_App extends BaseApp {
                 }
             }
         });
-//        json-->> {
-//        "op":"c","after":{"birthday":1284,"create_time":1654646400000,"login_name":"63k5cvx","nick_name":"艺欣","name":"邹艺欣","user_level":"1","phone_num":"13512773463","id":42,"email":"63k5cvx@sohu.com"},
-//        "source":{"thread":49,"server_id":1,"version":"1.9.7.Final","file":"mysql-bin.000006","connector":"mysql","pos":1572056,"name":"mysql_binlog_source","row":0,"ts_ms":1744418624000,"snapshot":"false","db":"realtime","table":"user_info"}
-//        ,"ts_ms":1744418621273}
-//
-//        kafkaDs.print("json-->");
-
-        //cdc
+//        kafkaDs.print();
+        //使用flink-cdc获取数据
         MySqlSource<String> getmysqlsource = flinksorceutil.getmysqlsource("stream_retail_config", "table_process_dim");
         DataStreamSource<String> mySQL_source = env.fromSource(getmysqlsource, WatermarkStrategy.noWatermarks(), "MySQL Source")
                 // 设置 source 节点的并行度为 4
-                .setParallelism(1);// 设置 sink 节点并行度为 1
-//        mySQL_source.print("mysql");
-        //"op":"r": {"before":null,"after":{"source_table":"activity_info","sink_table":"dim_activity_info","sink_family":"info","sink_columns":"id,activity_name,activity_type,activity_desc,start_time,end_time,create_time","sink_row_key":"id"},"source":{"version":"1.9.7.Final","connector":"mysql","name":"mysql_binlog_source","ts_ms":0,"snapshot":"false","db":"gmall2024_config","sequence":null,"table":"table_process_dim","server_id":0,"gtid":null,"file":"","pos":0,"row":0,"thread":null,"query":null},"op":"r","ts_ms":1716812196180,"transaction":null}
-        //"op":"c": {"before":null,"after":{"source_table":"a","sink_table":"a","sink_family":"a","sink_columns":"aaa","sink_row_key":"aa"},"source":{"version":"1.9.7.Final","connector":"mysql","name":"mysql_binlog_source","ts_ms":1716812267000,"snapshot":"false","db":"gmall2024_config","sequence":null,"table":"table_process_dim","server_id":1,"gtid":null,"file":"mysql-bin.000002","pos":11423611,"row":0,"thread":14,"query":null},"op":"c","ts_ms":1716812265698,"transaction":null}
-        //"op":"u": {"before":{"source_table":"a","sink_table":"a","sink_family":"a","sink_columns":"aaa","sink_row_key":"aa"},"after":{"source_table":"a","sink_table":"a","sink_family":"a","sink_columns":"aaabbb","sink_row_key":"aa"},"source":{"version":"1.9.7.Final","connector":"mysql","name":"mysql_binlog_source","ts_ms":1716812311000,"snapshot":"false","db":"gmall2024_config","sequence":null,"table":"table_process_dim","server_id":1,"gtid":null,"file":"mysql-bin.000002","pos":11423960,"row":0,"thread":14,"query":null},"op":"u","ts_ms":1716812310215,"transaction":null}
-        //"op":"d": {"before":{"source_table":"a","sink_table":"a","sink_family":"a","sink_columns":"aaabbb","sink_row_key":"aa"},"after":null,"source":{"version":"1.9.7.Final","connector":"mysql","name":"mysql_binlog_source","ts_ms":1716812341000,"snapshot":"false","db":"gmall2024_config","sequence":null,"table":"table_process_dim","server_id":1,"gtid":null,"file":"mysql-bin.000002","pos":11424323,"row":0,"thread":14,"query":null},"op":"d","ts_ms":1716812340475,"transaction":null}
+                .setParallelism(1);
+        //把mysql的数据进行实体封装
         SingleOutputStreamOperator<CommonTable> tpds = mySQL_source.map(new MapFunction<String, CommonTable>() {
             @Override
             public CommonTable map(String s) throws Exception {
                 JSONObject jsonObject = JSON.parseObject(s);
-                 String op = jsonObject.getString("op");
+                String op = jsonObject.getString("op");
                 CommonTable commonTable = null;
                 if ("d".equals(op)) {
                     commonTable = jsonObject.getObject("before", CommonTable.class);
@@ -92,10 +84,11 @@ public class Dim_App extends BaseApp {
                 return commonTable;
             }
         });
-//        2> CommonTable(sourceTable=base_trademark, sinkTable=dim_base_trademark, sinkColumns=id,tm_name, sinkFamily=info, sinkRowKey=id, op=c)
 
-        tpds.print();
-        tpds.map(
+//        tpds.print();
+
+
+        SingleOutputStreamOperator<CommonTable> map = tpds.map(
                 new RichMapFunction<CommonTable, CommonTable>() {
 
                     private Connection hbaseconn;
@@ -110,7 +103,6 @@ public class Dim_App extends BaseApp {
                     public void close() throws Exception {
                         Hbaseutli.closeHBaseConnection(hbaseconn);
                     }
-
                     @Override
                     public CommonTable map(CommonTable commonTable) throws Exception {
                         String op = commonTable.getOp();
@@ -132,7 +124,6 @@ public class Dim_App extends BaseApp {
                         return commonTable;
                     }
                 });
-
         // 创建一个描述符，用于定义状态映射，该映射以字符串类型为键，CommonTable类型为值
         MapStateDescriptor<String, CommonTable> tableMapStateDescriptor = new MapStateDescriptor<>
                 ("maps", String.class, CommonTable.class);
@@ -143,11 +134,10 @@ public class Dim_App extends BaseApp {
         SingleOutputStreamOperator<Tuple2<JSONObject, CommonTable>> dimDS = connects.process(
                 new Tablepeocessfcation(tableMapStateDescriptor)
         );
-////        2> ({"op":"u","dic_code":"1103","dic_name":"iiii"},CommonTable(sourceTable=base_dic, sinkTable=dim_base_dic, sinkColumns=dic_code,dic_name, sinkFamily=info, sinkRowKey=dic_code, op=c))
-//
 //        dimDS.print("dimDs");
         dimDS.addSink(new flinksinkHbase());
 
-    }
-}
 
+    }
+
+}
