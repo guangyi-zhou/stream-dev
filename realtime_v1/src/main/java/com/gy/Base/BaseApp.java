@@ -1,5 +1,6 @@
 package com.gy.Base;
 
+import com.alibaba.fastjson.JSONObject;
 import com.gy.realtime_dim.flinkfcation.flinksorceutil;
 import org.apache.flink.api.common.eventtime.WatermarkStrategy;
 import org.apache.flink.api.common.restartstrategy.RestartStrategies;
@@ -11,6 +12,8 @@ import org.apache.flink.streaming.api.CheckpointingMode;
 import org.apache.flink.streaming.api.datastream.DataStreamSource;
 import org.apache.flink.streaming.api.environment.CheckpointConfig;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
+
+import java.time.Duration;
 
 
 /**
@@ -38,28 +41,42 @@ public  abstract class BaseApp {
         //2.3 设置job取消后检查点是否保留
         env.getCheckpointConfig().setExternalizedCheckpointCleanup(CheckpointConfig.ExternalizedCheckpointCleanup.RETAIN_ON_CANCELLATION);
         //2.4 设置两个检查点之间最小时间间隔
-        env.getCheckpointConfig().setMinPauseBetweenCheckpoints(2000L);
+//        env.getCheckpointConfig().setMinPauseBetweenCheckpoints(2000L);
         //2.5 设置重启策略
         //env.setRestartStrategy(RestartStrategies.fixedDelayRestart(3,3000L));
-        env.setRestartStrategy(RestartStrategies.failureRateRestart(3, Time.days(30),Time.seconds(3)));
+//        env.setRestartStrategy(RestartStrategies.failureRateRestart(3, Time.days(30),Time.seconds(3)));
 
         //2.6 设置状态后端以及检查点存储路径
-        env.setStateBackend(new HashMapStateBackend());
+//        env.setStateBackend(new HashMapStateBackend());
 //        env.getCheckpointConfig().setCheckpointStorage("hdfs://hadoop102:8020/ck/" + ckAndGroupId);
 
         //2.7 设置操作hadoop的用户
-        System.setProperty("HADOOP_USER_NAME","hdfs");
+//        System.setProperty("HADOOP_USER_NAME","hdfs");
 
         //TODO 3.从kafka的主题中读取业务数据
         //3.1 声明消费的主题以及消费者组
         //3.2 创建消费者对象
-        KafkaSource<String> kafkaSource = flinksorceutil.getkafkasorce(topic);
+        KafkaSource<String> source = flinksorceutil.getkafkasorce(topic);
 
         //3.3 消费数据 封装为流
-        DataStreamSource<String> kafkaDs
-                = env.fromSource(kafkaSource, WatermarkStrategy.noWatermarks(), "Kafka_Source");
+        DataStreamSource<String> kafkaSource = (DataStreamSource<String>) env.fromSource(source,
+                WatermarkStrategy.<String>forBoundedOutOfOrderness(Duration.ofSeconds(3))
+                        .withTimestampAssigner((event, timestamp) -> {
+                                    if (event != null) {
+                                        try {
+                                            return JSONObject.parseObject(event).getLong("ts_ms");
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
+                                            System.err.println("Failed to parse event as JSON or get ts_ms: " + event);
+                                            return 0L;
+                                        }
+                                    }
+                                    return 0L;
+                                }
+                        ), "kafka_source");
+        ;
         //TODO 4.处理逻辑
-        handle(env,kafkaDs);
+        handle(env,kafkaSource);
         //TODO 5.提交作业
         env.execute();
     }
