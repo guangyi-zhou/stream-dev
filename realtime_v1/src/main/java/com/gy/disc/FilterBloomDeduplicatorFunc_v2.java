@@ -1,4 +1,4 @@
-package com.gy.disc.disc_dwd;
+package com.gy.disc;
 
 import com.alibaba.fastjson.JSONObject;
 import org.apache.flink.api.common.functions.RichFilterFunction;
@@ -14,7 +14,7 @@ import java.nio.charset.StandardCharsets;
 
 /**
  * @Package com.retailersv1.func.FilterBloomDeduplicatorFunc
- * @Author zhou.han
+ * @Author guangyi_zhou
  * @Date 2025/3/31 22:25
  * @description: 布隆过滤器
  */

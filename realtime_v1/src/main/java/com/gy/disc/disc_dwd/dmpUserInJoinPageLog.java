@@ -2,9 +2,7 @@ package com.gy.disc.disc_dwd;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.gy.disc.FilterBloomDeduplicatorFunc_v3;
-import com.gy.disc.FlinkDeduplicationUtil;
-import com.gy.disc.pageLogMapFunction;
+import com.gy.disc.*;
 import com.gy.realtime_dim.flinkfcation.flinksorceutil;
 import lombok.SneakyThrows;
 import org.apache.flink.api.common.eventtime.WatermarkStrategy;
@@ -13,9 +11,12 @@ import org.apache.flink.api.common.state.ValueStateDescriptor;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.connector.kafka.source.KafkaSource;
 import org.apache.flink.streaming.api.datastream.DataStreamSource;
+import org.apache.flink.streaming.api.datastream.KeyedStream;
 import org.apache.flink.streaming.api.datastream.SingleOutputStreamOperator;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.api.functions.KeyedProcessFunction;
+import org.apache.flink.streaming.api.windowing.assigners.TumblingProcessingTimeWindows;
+import org.apache.flink.streaming.api.windowing.time.Time;
 import org.apache.flink.util.Collector;
 
 import java.time.Duration;
@@ -66,39 +67,27 @@ public class dmpUserInJoinPageLog {
         SingleOutputStreamOperator<JSONObject> BloomfilterPageLogDS = PageLogDateStream.keyBy(data -> data.getLong("uid"))
                 .filter(new FilterBloomDeduplicatorFunc_v3(1000000, 0.01));
 //        BloomfilterPageLogDS.print();
+        KeyedStream<JSONObject, String> keyedStreamLogPageMsg = BloomfilterPageLogDS.keyBy(data -> data.getString("uid"));
 
-        SingleOutputStreamOperator<JSONObject> maxTsPerUserDS = PageLogDateStream
-                .keyBy(data -> data.getLong("uid"))
-                .process(new KeyedProcessFunction<Long, JSONObject, JSONObject>() {
-                    private transient ValueState<JSONObject> maxTsRecordState;
 
-                    @Override
-                    public void open(Configuration parameters) throws Exception {
-                        // 初始化状态：存储每个用户ID对应的最大时间戳记录
-                        ValueStateDescriptor<JSONObject> descriptor = new ValueStateDescriptor<>(
-                                "maxTsRecord",    // 状态名称
-                                JSONObject.class  // 状态类型
-                        );
-                        maxTsRecordState = getRuntimeContext().getState(descriptor);
-                    }
+        SingleOutputStreamOperator<JSONObject> processStagePageLogDs = keyedStreamLogPageMsg.process(new ProcessFilterRepeatTsData());
 
-                    @Override
-                    public void processElement(JSONObject jsonObject, Context context, Collector<JSONObject> collector) throws Exception {
+//        processStagePageLogDs.print("page去重后");
+        // 2 min 分钟窗口
+        SingleOutputStreamOperator<JSONObject> win2MinutesPageLogsDs = processStagePageLogDs.keyBy(data -> data.getString("uid"))
+                .process(new AggregateUserDataProcessFunction())
+                .keyBy(data -> data.getString("uid"))
+                .window(TumblingProcessingTimeWindows.of(Time.minutes(2)))
+                .reduce((value1, value2) -> value2)
+                .uid("win 2 minutes page count msg")
+                .name("win 2 minutes page count msg");
 
-                        // 获取当前记录的时间戳
-                        long currentTs = jsonObject.getLong("ts");
-                        // 获取当前存储的最大时间戳记录
-                        JSONObject maxTsRecord = maxTsRecordState.value();
+        win2MinutesPageLogsDs.print("page的数据合并数组");
 
-                        // 如果是第一条记录或当前记录时间戳更大，则更新状态
-                        if (maxTsRecord == null || currentTs > maxTsRecord.getLong("ts")) {
-                            maxTsRecordState.update(jsonObject);
-                        }
-                    }
-                }).uid("maxTsPerUse ts")
-                .name("maxTsPerUse ts"
-);
-        maxTsPerUserDS.print();
+
+
+
+
         env.execute();
     }
 }
