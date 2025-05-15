@@ -33,7 +33,7 @@ import org.apache.flink.util.OutputTag;
  */
 public class dmp_log extends BaseApp {
     public static void main(String[] args) throws Exception {
-        new dmp_log().start(10002,4, "dmp_log", constat.TOPIC_LOG);
+        new dmp_log().start(10002,4, "dmp_log", "dmp_log");
     }
     @Override
     public void handle(StreamExecutionEnvironment env, DataStreamSource<String> kafkaStrDS) {

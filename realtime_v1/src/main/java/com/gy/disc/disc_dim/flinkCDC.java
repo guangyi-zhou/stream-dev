@@ -27,8 +27,8 @@ public class flinkCDC {
         properties.setProperty("time.precision.mode","connect");
         MySqlSource<String> mySqlSource = MySqlSource.<String>builder()
                 .hostname("cdh03")
-                .startupOptions(StartupOptions.initial())
-//                .startupOptions(StartupOptions.latest())
+//                .startupOptions(StartupOptions.initial())
+                .startupOptions(StartupOptions.latest())
                 .debeziumProperties(properties)
                 .port(3306)
                 .databaseList("stream_retail")

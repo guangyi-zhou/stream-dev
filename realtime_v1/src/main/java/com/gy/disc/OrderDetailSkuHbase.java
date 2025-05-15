@@ -31,7 +31,9 @@ public class OrderDetailSkuHbase extends RichMapFunction<JSONObject, JSONObject>
         JSONObject skuInfoJsonObj = Hbaseutli.getRow(hbaseConn, "stream_retail", "dim_sku_info", skuId, JSONObject.class);
         JSONObject a = new JSONObject();
         a.put("uid",jsonObject.getString("user_id"));
+        a.put("total_amount",jsonObject.getString("total_amount"));
         a.put("tm_id",skuInfoJsonObj.getString("tm_id"));
+        a.put("create_time",jsonObject.getString("create_time"));
         a.put("category3_id", skuInfoJsonObj.getString("category3_id"));
         return a;
     }

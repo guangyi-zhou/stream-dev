@@ -4,7 +4,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.gy.constat.constat;
 import com.gy.disc.bean.DimBaseCategory;
 import com.gy.disc.bean.DimCategoryCompare;
-import com.gy.utils.ConfigUtils;
 import com.gy.utils.JdbcUtils;
 import org.apache.flink.api.common.functions.RichMapFunction;
 import org.apache.flink.configuration.Configuration;
