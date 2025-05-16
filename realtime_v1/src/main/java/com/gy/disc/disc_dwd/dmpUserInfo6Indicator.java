@@ -276,13 +276,6 @@ public class dmpUserInfo6Indicator extends BaseApp {
 //        mapOrderInfoAndDetailModelDs.print("mapOrderInfoAndDetailModelDs: ");
 
 
-
-
-
-
-
-
-
 //        orderInfoSupMsgTableData.print("order_info数据");
 //        {"op":"r","after":{"payment_way":"3501","refundable_time":1747678014000,"original_total_amount":"129.00","order_status":"1003","consignee_tel":"13831967956","trade_body":"索芙特i-Softto 口红不掉色唇膏保湿滋润 璀璨金钻哑光唇膏 Y01复古红 百搭气质 璀璨金钻哑光唇膏 等1件商品","id":3683,"operate_time":1747073232000,"consignee":"朱飘育","create_time":1747073214000,"expire_time":1747073814000,"coupon_reduce_amount":"30.00","out_trade_no":"763397614635674","total_amount":"99.00","user_id":729,"province_id":9,"activity_reduce_amount":"0.00"},"source":{"server_id":0,"version":"1.9.7.Final","file":"","connector":"mysql","pos":0,"name":"mysql_binlog_source","row":0,"ts_ms":0,"snapshot":"false","db":"stream_retail","table":"order_info"},"ts_ms":1747013011724}
 
