@@ -266,10 +266,7 @@ public class dmpUserInfo6Indicator extends BaseApp {
                         KafkaUtils.buildKafkaSink("cdh01:9092,cdh02:9092,cdh03:9092","kafka_label_base4_topic")
                 );
 
-//        mapDeviceAndSearchRateResultDs.map(data -> data.toJSONString())
-//                .sinkTo(
-//                        KafkaUtils.buildKafkaSink("cdh01:9092,cdh02:9092,cdh03:9092","kafka_label_base2_topic")
-//                );
+
 
 //        userInfoJoinUserSumMsgDs.print("processIntervalJoinUserInfo6BaseMessageDs: ");
         mapDeviceAndSearchRateResultDs.print("mapDeviceAndSearchRateResultDs: ");
