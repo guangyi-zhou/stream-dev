@@ -268,9 +268,9 @@ public class dmpUserInfo6Indicator extends BaseApp {
 
 
 
-        userInfoJoinUserSumMsgDs.print("processIntervalJoinUserInfo6BaseMessageDs: ");
-        mapDeviceAndSearchRateResultDs.print("mapDeviceAndSearchRateResultDs: ");
-        mapOrderInfoAndDetailModelDs.print("mapOrderInfoAndDetailModelDs: ");
+//        userInfoJoinUserSumMsgDs.print("processIntervalJoinUserInfo6BaseMessageDs: ");
+//        mapDeviceAndSearchRateResultDs.print("mapDeviceAndSearchRateResultDs: ");
+//        mapOrderInfoAndDetailModelDs.print("mapOrderInfoAndDetailModelDs: ");
 
 
 //        orderInfoSupMsgTableData.print("order_info数据");
