@@ -261,10 +261,10 @@ public class dmpUserInfo6Indicator extends BaseApp {
 //                        KafkaUtils.buildKafkaSink("cdh01:9092,cdh02:9092,cdh03:9092","kafka_label_base6_topic")
 //                );
 
-        mapOrderInfoAndDetailModelDs.map(data -> data.toJSONString())
-                .sinkTo(
-                        KafkaUtils.buildKafkaSink("cdh01:9092,cdh02:9092,cdh03:9092","kafka_label_base4_topic")
-                );
+//       mapOrderInfoAndDetailModelDs.map(data -> data.toJSONString())
+//                 .sinkTo(
+//                         KafkaUtils.buildKafkaSink("cdh01:9092,cdh02:9092,cdh03:9092","kafka_label_base4_topic")
+//                 );
 
 
 
