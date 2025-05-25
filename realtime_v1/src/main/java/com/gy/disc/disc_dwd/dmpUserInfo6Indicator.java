@@ -254,8 +254,7 @@ public class dmpUserInfo6Indicator extends BaseApp {
 //
 //        userInfoJoinUserSumMsgDs.print("userINfo");
 ////        win2MinutesPageLogsDs.print("page数据");
-//
-//
+
 //        userInfoJoinUserSumMsgDs.map(data -> data.toJSONString())
 //                .sinkTo(
 //                        KafkaUtils.buildKafkaSink("cdh01:9092,cdh02:9092,cdh03:9092","kafka_label_base6_topic")
